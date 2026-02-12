@@ -1,0 +1,26 @@
+<div class="flex h-screen w-screen">
+  <div class="auth-bg bg-primary hidden flex-1 items-center justify-center bg-cover lg:flex">
+    <div class="max-w-2xl space-y-4 p-5 text-center text-white">
+      <img src="./assets/images/pesca_muestreo.jpg" alt="dashboard widget" />
+      <h1 class="text-4xl font-bold">"Sistema de Gestión de muestro"</h1>
+      <p class="text-xs font-light">
+        Gestionamiento de los muestreos en el sector pesquero
+      </p>
+    </div>
+  </div>
+  <div class="bg-background flex flex-1 items-center justify-center">
+  <div class="max-w-md overflow-y-auto px-4 sm:w-[500px] flex flex-col items-center gap-1">
+    
+    <!-- Logo arriba -->
+    <ul class="bg-primary rounded-sm p-3 text-center">
+      <svg-icon src="assets/icons/LogoBVFE.svg" [svgClass]="'h-25 w-25'"></svg-icon>
+    </ul>
+    
+    <!-- Título debajo -->
+    <b class="text-md text-foreground ">Parte de Muestreo</b>
+    
+    <!-- Contenido dinámico -->
+    <router-outlet></router-outlet>
+  </div>
+</div>
+</div>

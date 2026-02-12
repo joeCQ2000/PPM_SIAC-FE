@@ -1,0 +1,896 @@
+<h2 class="text-center text-2xl font-bold mb-6 text-foreground dark:text-white">Registro de Muestreo</h2>
+<form [formGroup]="muestreoForm" (ngSubmit)="registrar()" class="w-full mx-auto px-4">
+  <div class="bg-transparent text-white border border-primary-background/90 rounded-2xl shadow-xl overflow-hidden">
+    
+    <!-- Header primary-foreground -->
+    <div class="bg-primary text-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-wider text-gray-100">Formulario</p>
+          <h3 class="text-xl font-semibold text-white">Muestreo </h3>
+
+        </div>
+        <div class="hidden md:flex items-center gap-2">
+          <span class="inline-flex items-center gap-1 rounded-full bg-white/10 text-white px-3 py-1 text-xs border border-white/20">● Datos de Muestreo I</span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-white/10 text-white px-3 py-1 text-xs border border-white/20">● Datos de Muestreo II</span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-white/10 text-white px-3 py-1 text-xs border border-white/20">● Resultados y detalles finales</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cuerpo negro -->
+    <div class=" text-primary p-6 space-y-8">
+      <!--Sección 1-->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-6 text-foreground">Datos de Muestreo I</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 text-primary">
+        <!-- Datos del Muestreo -->
+       <fieldset class="p-4 border border-foreground rounded-lg text-foreground h-full shadow-inner">
+          <legend class="px-2 text-lg font-semibold text-foreground"> Datos del Muestreo </legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+           <div>
+              <label class="text-sm text-gray-400">
+                Correlativo 
+              </label>
+              <input type="text"
+                    formControlName="correlativo"
+                    class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+                    placeholder="Correlativo Autogenerado" />
+            </div>
+            <!-- Región -->
+            <div class="form-group mb-3">
+              <label class="text-sm text-white-700">
+                Región <span class="text-red-500">*</span>
+              </label>
+              <select id="id_region"
+                      formControlName="id_region"
+                      class="form-select"
+                      [ngClass]="{'is-invalid': f['id_region'].invalid && (f['id_region'].touched || submitted)}">
+                <option value="0">Seleccione una región</option>
+                <option *ngFor="let region of regiones" [value]="region.id_ubigeo">
+                  {{ region.nombre }}
+                </option>
+              </select>
+
+              <div *ngIf="f['id_region'].invalid && (f['id_region'].touched || submitted)" class="text-red-500 text-xs mt-1">
+                 Este campo es obligatorio
+              </div>
+            </div>
+            <!-- Provincia -->
+            <div class="form-group mb-3">
+              <label class="text-sm text-white-700">
+                Provincia <span class="text-red-500">*</span>
+              </label>
+              <select id="id_provincia"
+                      formControlName="id_provincia"
+                      class="form-select"
+                      [disabled]="!regiones.length"
+                      [ngClass]="{'is-invalid': f['id_provincia'].invalid && (f['id_provincia'].touched || submitted)}">
+                <option value="0">Seleccione una provincia</option>
+                <option *ngFor="let provincia of provincias" [value]="provincia.id_ubigeo">
+                  {{ provincia.nombre }}
+                </option>
+              </select>
+
+              <div *ngIf="f['id_provincia'].invalid && (f['id_provincia'].touched || submitted)" class="text-red-500 text-xs mt-1">
+                Este campo es obligatorio.
+              </div>
+            </div>
+            <!--Distritos-->
+            <div class="form-group mb-3">
+              <label class="text-sm text-white-700">
+                Distrito <span class="text-red-500">*</span>
+              </label>
+              <select id="id_distrito"
+                      formControlName="id_distrito"
+                      class="form-select"
+                      [disabled]="!regiones.length"
+                      [ngClass]="{'is-invalid': f['id_distrito'].invalid && (f['id_distrito'].touched || submitted)}">
+                <option value="0">Seleccione un distrito</option>
+                <option *ngFor="let distritos of distritos" [value]="distritos.id_ubigeo">
+                  {{ distritos.nombre }}
+                </option>
+              </select>
+
+              <div *ngIf="f['id_distrito'].invalid && (f['id_distrito'].touched || submitted)" class="text-red-500 text-xs mt-1">
+                Este campo es obligatorio.
+              </div>
+            </div>
+            
+           <!--Tipo Instalación-->
+           <div class="form-group mb-3">
+              <label class="text-sm text-foreground">Tipo de Instalación</label>
+              <select id="id_tipo_instalacion"
+                      formControlName="id_tipo_instalacion"
+                      class="form-select"
+                      [ngClass]="{'is-invalid': f['id_tipo_instalacion'].invalid && (f['id_tipo_instalacion'].touched || submitted)}">
+                <option value="0">Seleccione el tipo de Instalación</option>
+                <option *ngFor="let tipo of instalaciones" [value]="tipo.Id_Tipo_Instalacion">
+                  {{ tipo.Nombre }}
+                </option>
+              </select>
+            </div>
+            <!--Planta-->
+                  <div class="form-group mb-3">
+              <label class="text-sm text-foreground">Planta (Cliente)<span class="text-red-500">*</span></label>
+
+              <select class="w-full p-2 bg-white border border-gray-300 rounded"
+                      formControlName="id_punto_control"
+                      [ngClass]="{'is-invalid': f['id_punto_control'].invalid && (f['id_punto_control'].touched || submitted)}">
+                <option value="0">Seleccione una planta</option>
+                <option *ngFor="let pc of puntosdecontrol"
+                        [value]="pc.Id_Punto_Control">
+                  {{ displayFnPuntoControl(pc.Id_Punto_Control) }}
+                </option>
+              </select>
+
+              <div *ngIf="f['id_punto_control'].invalid && (f['id_punto_control'].touched || submitted)"
+                  class="text-red-500 text-xs mt-1">
+                Este campo es obligatorio
+              </div>
+            </div>
+            <!--Fiscalizadora-->       
+            <div>
+              <label class="text-sm text-white-700">Unidad Fiscalizada <span class="text-red-500">*</span></label>
+              <input type="text"
+                    formControlName="unidad_fiscalizada"
+                    [class.border-red-500]="submitted && muestreoForm.get('unidad_fiscalizada')?.invalid"
+                    class="w-full p-2 bg-white border border-gray-300 rounded" />
+              <div *ngIf="submitted && muestreoForm.get('unidad_fiscalizada')?.invalid" class="text-red-500 text-xs mt-1">
+                Este campo es obligatorio.
+              </div>
+            </div>  
+            <!--Fecha registro-->
+            
+            <div>
+            <label class="text-sm text-gray-400"> Fecha de Registro </label>
+            <input
+              type="date"
+              formControlName="fecha_registro"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+            />
+          </div>
+          </div>
+        </fieldset>
+
+        <!--  Datos del Muestreo  -->
+        <fieldset class="p-4 border border-foreground rounded-lg text-white-700 h-full shadow-inner">
+          <legend class="px-2 text-foreground font-semibold ">  Datos del Muestreo  </legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            <!-- Matricula : Embarcaciones -->
+              <!-- MATRÍCULA -->
+               <div>
+                <label class="text-sm text-foreground"> Matricula<span class="text-red-500">*</span> </label>
+              <input matInput
+                    type="text"
+                    placeholder="Buscar matrícula"
+                    autocomplete="off"
+                    formControlName="Id_Embarcacion"
+                    [matAutocomplete]="autoMatricula"
+                    [ngClass]="{'is-invalid': f['Id_Embarcacion'].invalid && (f['Id_Embarcacion'].touched || submitted)}">
+
+              <mat-autocomplete #autoMatricula="matAutocomplete"
+                                (optionSelected)="onSelectMatricula($event)"
+                                [displayWith]="displayFn">
+                <mat-option *ngFor="let option of matriculasFiltradas$ | async"
+                            [value]="option">
+                  {{ option.matricula }}
+                </mat-option>
+
+                <mat-option *ngIf="(matriculasFiltradas$ | async)?.length === 0"
+                            disabled>
+                  No se encontraron matrículas
+                </mat-option>
+              </mat-autocomplete>
+              
+              </div>
+              <!--Cliente-->
+              <div>
+              <label class="text-sm text-foreground">Cliente <span class="text-red-500">*</span></label>
+              <select formControlName="id_cliente"
+                      [class.border-red-500]="submitted && muestreoForm.get('id_cliente')?.invalid"
+                      class="w-full p-2 bg-white border border-gray-300 rounded">
+                <option value="0">Seleccione una especie</option>
+                <option *ngFor="let cliente of clientes" [value]="cliente.id_cliente">{{ cliente.razon_social }}</option>
+              </select>
+              <div *ngIf="submitted && muestreoForm.get('id_cliente')?.invalid" class="text-red-500 text-xs mt-1">
+                Este campo es obligatorio.
+              </div>
+            </div>
+
+            <!--Nombre EP-->
+           
+              <div>
+              <label class="text-sm text-foreground">Nombre EP</label>
+              <input type="text"
+                    formControlName="nombre_ep"
+                    class="w-full p-2 bg-white border border-gray-300 rounded text-foreground" />
+              </div>
+              
+            <div>
+              <label class="text-sm text-foreground">Cap. Bodega (m³)</label>
+              <input type="number" inputmode="decimal" step="0.01" formControlName="cap_bod_m3_arqueo" class="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            </div>
+            <div>
+              <label class="text-sm text-foreground">Peso Reg. (T)</label>
+              <input type="number" inputmode="decimal" step="0.01" formControlName="peso_registrado_t" class="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            </div>
+            <div *ngIf="muestreoForm.get('id_tipo_instalacion')?.value === '2'" class="form-group mb-3">
+              <label class="text-sm text-foreground">Peso guía T</label>
+              <input type="number" step="0.01"
+                    formControlName="peso_guia_t"
+                    class="w-full p-2 bg-white border border-gray-300 rounded text-foreground" />
+            </div>
+            <div> 
+              <label class="text-sm text-foreground">Nro de Repesaje</label>
+              <input type="text"
+                    formControlName="nro_rep_pesaje"
+                    class="w-full p-2 bg-white border border-gray-300 rounded" />
+            </div>
+            <div> 
+              <label class="text-sm text-foreground">Placa</label>
+              <input type="text"
+                    formControlName="placa"
+                    class="w-full p-2 bg-white border border-gray-300 rounded" />
+            </div>
+            <div>
+              <label class="text-sm text-foreground">Peso_dec_t</label>
+              <input type="number" inputmode="decimal" step="0.01" formControlName="peso_dec_t" class="w-full p-2 bg-transparent border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"/>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Lugar de Muestreo -->
+        <fieldset class="p-4 border border-foreground rounded-lg text-foreground h-full shadow-inner">
+          <legend class="px-2 text-lg font-semibold text-foreground"> Lugar de Muestreo </legend>
+          <div class="mt-3 grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-2 gap-x-4 gap-y-4 text-sm">
+            <label class="flex items-center justify-between gap-4 py-1">
+              <span class="text-foreground text-sm">Tolva  </span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="tolva" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+              </label>
+            </label>
+            <div>
+              <label class="text-sm text-foreground">Tolva Nro.</label>
+              <input type="number" formControlName="tolva_nro" class="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            </div>
+           <label class="flex items-center justify-between gap-4 py-1">
+              <span class="text-foreground text-sm">Muelle</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="muelle" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+              </label>
+            </label>
+            <label class="flex items-center justify-between gap-4 py-1">
+              <span class="text-foreground text-sm">Zona de recepcion</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="zona_recepcion" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+              </label>
+            </label>
+            <label class="flex items-center justify-between gap-4 py-1">
+              <span class="text-foreground text-sm">DPA</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="dpa" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+              </label>
+            </label>
+            <label class="flex items-center justify-between gap-4 py-1">
+              <span class="text-foreground text-sm">Terminal Pesquero</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="terminal_pesquero" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+              </label>
+            </label>
+            <label class="flex items-center justify-between gap-4 py-1">
+              <span class="text-foreground text-sm">Carretera</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="carretera" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+              </label>
+            </label>
+           <label class="flex items-center justify-between gap-4 py-1">
+              <span class="text-foreground text-sm">Garita de peaje</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="garita_peaje" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+              </label>
+            </label>
+            <label class="flex items-center justify-between gap-4 py-1">
+              <span class="text-foreground text-sm">Otros</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="otros" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+              </label>
+            </label>
+          </div>
+
+          <div class="mt-3" *ngIf="muestreoForm.get('otros')?.value">
+          
+              <label class="text-sm text-foreground">Descripcion Otros</label>
+              <input type="text"
+                    formControlName="otros_descripcion"
+                    class="w-full p-2 bg-white border border-gray-300 rounded text-foreground" />
+          </div>
+        </fieldset>
+          <div class="flex flex-col gap-3 h-full">
+
+            <!-- METODOLOGÍA  DE MUESTREO -->
+            <fieldset class="p-4 border border-foreground rounded-lg text-foreground shadow-inner">
+              <legend class="px-2 text-lg font-semibold text-foreground"> Metodología de Muestreo</legend>
+
+              <div class="mt-3 grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                <label class="flex items-center justify-between gap-4 py-1">
+                  <span class="text-foreground text-sm">En descarga</span>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" formControlName="en_descarga" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+                  </label>
+                </label>
+
+                <label class="flex items-center justify-between gap-4 py-1">
+                  <span class="text-foreground text-sm">Por cuarteo</span>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" formControlName="por_cuarteo" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+                  </label>
+                </label>
+
+                <label class="flex items-center justify-between gap-4 py-2">
+                  <span class="text-foreground text-sm">Total (pulpo)</span>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" formControlName="total_pulpo" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+                  </label>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- TOMA DE MUESTRAS -->
+            <fieldset class="p-4 border border-foreground rounded-lg text-foreground shadow-inner">
+              <legend class="px-2 text-lg font-semibold text-foreground"> Toma de Muestras</legend>
+
+              <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3">
+              <div> 
+              <label class="text-sm text-foreground">Descarga Acumulada</label>
+              <input type="text"
+                    formControlName="descarga_acumulada_t"
+                    class="w-full p-2 bg-white border border-gray-300 rounded" />
+              </div>
+                <div>
+                  <label class="text-sm text-white-700">Toma Muestra 1 <span class="text-red-500">*</span></label>
+                  <input type="text"
+                        formControlName="toma_muestra_1"
+                        [class.border-red-500]="submitted && muestreoForm.get('toma_muestra_1')?.invalid"
+                        class="w-full p-2 bg-white border border-gray-300 rounded" />
+                  <div *ngIf="submitted && muestreoForm.get('toma_muestra_1')?.invalid" class="text-red-500 text-xs mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                  
+                </div> 
+
+               <div>
+                  <label class="text-sm text-white-700">Toma Muestra 2 <span class="text-red-500">*</span></label>
+                  <input type="text"
+                        formControlName="toma_muestra_2"
+                        [class.border-red-500]="submitted && muestreoForm.get('toma_muestra_2')?.invalid"
+                        class="w-full p-2 bg-white border border-gray-300 rounded" />
+                  <div *ngIf="submitted && muestreoForm.get('toma_muestra_2')?.invalid" class="text-red-500 text-xs mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                </div> 
+
+               <div>
+                  <label class="text-sm text-white-700">Toma Muestra 3<span class="text-red-500">*</span></label>
+                  <input type="text"
+                        formControlName="toma_muestra_3"
+                        [class.border-red-500]="submitted && muestreoForm.get('toma_muestra_3')?.invalid"
+                        class="w-full p-2 bg-white border border-gray-300 rounded" />
+                  <div *ngIf="submitted && muestreoForm.get('toma_muestra_3')?.invalid" class="text-red-500 text-xs mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                </div> 
+              </div>
+            </fieldset>
+
+          </div>
+      </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 text-foreground"> Datos de Muestreo II </div>
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 text-foreground">
+     <!-- Composición de la muestra -->
+        <fieldset class="p-4 border border-foreground rounded-lg text-foreground h-full shadow-inner xl:col-span-3">
+          <legend class="px-2 text-lg font-semibold text-foreground"> Composición de la muestra </legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          
+            <div>
+              <label class="text-sm text-foreground">Especie <span class="text-red-500">*</span></label>
+              <select formControlName="id_especie"
+                      [class.border-red-500]="submitted && muestreoForm.get('id_especie')?.invalid"
+                      class="w-full p-2 bg-white border border-gray-300 rounded">
+                <option value="0">Seleccione una especie</option>
+                <option *ngFor="let especie of especies" [value]="especie.id_especie">{{ especie.nombre_comun }}</option>
+              </select>
+              <div *ngIf="submitted && muestreoForm.get('id_especie')?.invalid" class="text-red-500 text-xs mt-1">
+                Este campo es obligatorio.
+              </div>
+            </div>
+
+                <div>
+                  <label class="text-sm text-white-700">Peso (kg) <span class="text-red-500">*</span></label>
+                  <input type="text"
+                        formControlName="peso"
+                        [class.border-red-500]="submitted && muestreoForm.get('peso')?.invalid"
+                        class="w-full p-2 bg-white border border-gray-300 rounded" />
+                  <div *ngIf="submitted && muestreoForm.get('peso')?.invalid" class="text-red-500 text-xs mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                </div> 
+            <div>
+                  <label class="text-sm text-white-700">% Porcentaje <span class="text-red-500">*</span></label>
+                  <input type="decimal"
+                        formControlName="porcentaje"
+                        [class.border-red-500]="submitted && muestreoForm.get('porcentaje')?.invalid"
+                        class="w-full p-2 bg-white border border-gray-300 rounded" />
+                  <div *ngIf="submitted && muestreoForm.get('porcentaje')?.invalid" class="text-red-500 text-xs mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                </div> 
+           <div class="form-group mb-3">
+              <label class="text-sm text-foreground">Total</label>
+              <input type="number" step="0.01"
+                    formControlName="total"
+                    class="w-full p-2 bg-gray-100 border border-gray-300 rounded text-foreground"
+                    >   <!-- ← deshabilitado -->
+            </div>
+
+            <div>
+            <label class="text-sm text-gray-400"> Fecha de Inicio </label>
+            <input
+              type="date"
+              formControlName="fecha_inicio_toma"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+            />
+            </div>
+            
+           <div>
+            <label class="text-sm text-gray-400"> Hora de Inicio </label>
+            <input
+              type="time"
+              formControlName="hora_inicio_toma"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+            />
+            </div>
+
+            <div>
+            <label class="text-sm text-gray-400"> Fecha Fin </label>
+            <input
+              type="date"
+              formControlName="fecha_fin_toma"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+            />
+            </div>
+           <div>
+            <label class="text-sm text-gray-400"> Hora Fin </label>
+            <input
+              type="time"
+              formControlName="hora_fin_toma"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+            />
+            </div>
+        
+          </div>
+        </fieldset>
+    
+        <!--Detalle del muestreo-->
+    <fieldset class="p-4 border border-foreground rounded-lg text-foreground h-full shadow-inner xl:col-span-9">
+      <legend class="px-2 text-lg font-semibold text-foreground"> Detalle del Muestreo</legend>
+
+    <div class="flex items-center justify-between mt-2 mb-3">
+      <p class="text-sm text-foreground">
+        Completa las medidas de 1 hasta <span class="font-semibold text-foreground">180 muestras</span>.
+      </p>
+      <span class="text-xs text-white-500">
+        (Solo se guardarán las filas con valores)
+      </span>
+    </div>
+
+    <div formArrayName="detalle" class="overflow-x-auto border rounded-lg max-h-[450px]">
+      <table class="w-full border-collapse text-sm">
+        <thead class="bg-primary text-xs uppercase sticky top-0">
+          <tr>
+            <th class="px-3 py-2 border text-primary-foreground w-20">#</th>
+            <th class="px-3 py-2 border text-primary-foreground">Medida (cm)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+          *ngFor="let detCtrl of detalle.controls; let i = index; trackBy: trackByFila"
+          [formGroupName]="i"
+          class="hover:bg-rose-50 transition-colors"
+            >
+            <td class="border text-center font-medium text-white-700">{{ detCtrl.get('nro_fila')?.value }}</td>
+            <td class="border">
+              <input
+                type="number"
+                formControlName="medida"
+                step="0.01"
+                placeholder="Ej: 25.344"
+                class="w-full px-2 py-1 text-center border-none focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    
+  </fieldset>
+</div>
+    
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 text-foreground"> Resultados y detalles finales</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      
+        <!-- Resultados -->
+       <fieldset class="p-4 border border-foreground rounded-lg text-foreground h-full shadow-inner">
+          <legend class="px-2 text-lg font-semibold text-foreground"> Resultados </legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            <div>
+            <label class="text-sm text-foreground">Media Aritmética (cm)</label>
+            <input
+              type="number"
+              inputmode="decimal"
+              step="0.01"
+              formControlName="media_aritmetica_cm"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+              placeholder="0.00"
+
+            />
+          </div>
+          
+          <div>
+            <label class="text-sm text-foreground"> Moda (cm) </label>
+            <input
+              type="number"
+              inputmode="decimal"
+              step="0.01"
+              formControlName="moda_cm"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+              placeholder="0.00"
+
+            />
+          </div>
+          <div>
+            <label class="text-sm text-foreground"> Moda (nro) </label>
+            <input
+              type="number"
+              inputmode="decimal"
+              step="0.01"
+              formControlName="moda_nro"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+              placeholder="0.00"
+
+            />
+          </div>
+            <div>
+            <label class="text-sm text-foreground"> Total de Ejemplares </label>
+            <input
+              type="number"
+              inputmode="decimal"
+              step="0.01"
+              formControlName="total_ejemplares"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+              placeholder="0.00"
+
+            />
+          </div>
+            <div>
+            <label class="text-sm text-foreground"> % de Ejemplares Juveniles </label>
+            <input
+              type="number"
+              inputmode="decimal"
+              step="0.01"
+              formControlName="ejemplares_juveniles_pct"
+              class="w-full p-2 rounded bg-gray-500 text-gray-200 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+              placeholder="0.00"
+
+            />
+          </div>
+            <div>
+            <label class="text-sm text-foreground"> Nro de Ejemplares Juveniles </label>
+            <input
+              type="number"
+              inputmode="decimal"
+              step="0.01"
+              formControlName="ejemplares_juveniles_nro"
+              class="w-full p-2 rounded bg-white text-gray-700 placeholder-gray-400 border border-gray-300
+                    cursor-not-allowed"
+              placeholder="0.00"
+
+            />
+          </div>
+          </div>
+        </fieldset>
+        <!-- FISCALIZACIÓN Y EQUIPO -->
+       <fieldset class="p-4 border border-foreground rounded-lg text-foreground h-full shadow-inner">
+          <legend class="px-2 text-lg font-semibold text-foreground"> Fiscalización y Equipo </legend>
+          <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3">
+            
+            <!-- ICTIÓMETRO -->
+             <div>
+              <label class="text-sm text-foreground"> Ictiometros <span class="text-red-500">*</span></label>
+              <input matInput
+                type="text"
+                placeholder="Buscar ictiometro"
+                autocomplete="off"
+                [formControl]="ictiometroCtrl"
+                [matAutocomplete]="autoIctiometro"
+                [ngClass]="{'is-invalid': f['id_ictiometro'].invalid && (f['id_ictiometro'].touched || submitted)}">
+
+          <mat-autocomplete #autoIctiometro="matAutocomplete"
+                            (optionSelected)="onSelectIctiometro($event)"
+                            [displayWith]="displayFnIctiometro">
+            <mat-option *ngFor="let option of IctiometrosFiltrados$ | async"
+                        [value]="option">
+              {{ option.codigo_barcode }}
+            </mat-option>
+
+            <mat-option *ngIf="(IctiometrosFiltrados$ | async)?.length === 0"
+                        disabled>
+              No se encontraron resultados
+            </mat-option>
+            
+          </mat-autocomplete>
+          
+          </div>
+            
+            <!--EquipoSearch-->
+            <div>
+                <label class="text-sm text-foreground"> Equipos <span class="text-red-500">*</span></label>
+              <input matInput
+                    type="text"
+                    placeholder="Buscar equipo"
+                    autocomplete="off"
+                    formControlName="id_equipo"
+                    [matAutocomplete]="autoEquipo"
+                    [ngClass]="{'is-invalid': f['id_equipo'].invalid && (f['id_equipo'].touched || submitted)}"
+                    class="w-full p-2 bg-white border border-gray-300 rounded">
+
+              <mat-autocomplete #autoEquipo="matAutocomplete"
+                                (optionSelected)="onSelectEquipos($event)"
+                                [displayWith]="displayFnEquipos">
+                <mat-option *ngFor="let option of equiposFiltrados$ | async"
+                            [value]="option">
+                  {{ option.codigo }}
+                </mat-option>
+
+                <mat-option *ngIf="(equiposFiltrados$ | async)?.length === 0"
+                            disabled>
+                  No se encontraron matrículas
+                </mat-option>
+              </mat-autocomplete>
+              </div>
+            <!--Fiscalizador 1-->
+            <div>
+                <label class="text-sm text-foreground"> Fiscalizador Primario <span class="text-red-500">*</span></label>
+              <input matInput
+                    type="text"
+                    placeholder="Buscar Usuario"
+                    autocomplete="off"
+                    formControlName="id_fiscalizador_primario"
+                    [matAutocomplete]="autoPrimario"
+                    [ngClass]="{'is-invalid': f['id_fiscalizador_primario'].invalid && (f['id_fiscalizador_primario'].touched || submitted)}"
+                    class="w-full p-2 bg-white border border-gray-300 rounded">
+
+              <mat-autocomplete #autoPrimario="matAutocomplete"
+                                (optionSelected)="onSelectUsuarioPrimario($event)"
+                                [displayWith]="displayFnUsuarios">
+                <mat-option *ngFor="let option of UsuarioPrimarioFiltrados$ | async"
+                            [value]="option">
+                  {{ option.nombre_completo }}
+                </mat-option>
+
+                <mat-option *ngIf="(UsuarioPrimarioFiltrados$ | async)?.length === 0"
+                            disabled>
+                  No se encontraron usuarios
+                </mat-option>
+              </mat-autocomplete>
+              </div>
+            <!--Fiscalizador 2-->
+            <div>
+                <label class="text-sm text-foreground"> Fiscalizador Secundario <span class="text-red-500">*</span></label>
+              <input matInput
+                    type="text"
+                    placeholder="Buscar Usuario"
+                    autocomplete="off"
+                    formControlName="id_fiscalizador_secundario"
+                    [matAutocomplete]="autoSecundario"
+                    [ngClass]="{'is-invalid': f['id_fiscalizador_secundario'].invalid && (f['id_fiscalizador_secundario'].touched || submitted)}"
+                    class="w-full p-2 bg-white border border-gray-300 rounded">
+
+              <mat-autocomplete #autoSecundario="matAutocomplete"
+                                (optionSelected)="onSelectUsuarioSecundario($event)"
+                                [displayWith]="displayFnUsuarios">
+                <mat-option *ngFor="let option of UsuarioSecundarioFiltrados$ | async"
+                            [value]="option">
+                  {{ option.nombre_completo }}
+                </mat-option>
+
+                <mat-option *ngIf="(UsuarioSecundarioFiltrados$ | async)?.length === 0"
+                            disabled>
+                  No se encontraron usuarios
+                </mat-option>
+              </mat-autocomplete>
+              </div>
+          </div>
+        </fieldset>
+
+        <!-- OBSERVACIONES Y TESTIGOS -->
+        <fieldset class="p-4 border border-foreground rounded-lg text-foreground h-full shadow-inner">
+          <legend class="px-2 text-lg font-semibold text-foreground"> Observaciones y testigos  </legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            <div> 
+              <label class="text-sm text-foreground">Zona de Pesca<span class="text-red-500">*</span></label>
+              <input type="text"
+                    formControlName="zona_pesca"
+                    class="w-full p-2 bg-white border border-gray-300 rounded" />
+              <div *ngIf="submitted && muestreoForm.get('zona_pesca')?.invalid" class="text-red-500 text-xs mt-1">
+                Este campo es obligatorio.
+              </div>
+            </div>
+            <div> 
+              <label class="text-sm text-foreground">Bitácora <span class="text-red-500">*</span></label>
+              <input type="text"
+                    formControlName="codigo_bitacora"
+                    class="w-full p-2 bg-white border border-gray-300 rounded" />
+             <div *ngIf="submitted && muestreoForm.get('codigo_bitacora')?.invalid" class="text-red-500 text-xs mt-1">
+                Este campo es obligatorio.
+              </div>
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm text-foreground">Observaciones</label>
+              <textarea rows="3" formControlName="observaciones"
+                        class="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+            </div>
+             <div class="flex items-center gap-4">
+              <label class="text-sm text-foreground">Estuvo presente el representante?</label>
+
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  formControlName="representantePresente"
+                  class="sr-only peer"
+                />
+                <div
+                  class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"
+                ></div>
+                <div
+                  class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"
+                ></div>
+              </label>
+            </div>
+             <div *ngIf="muestreoForm.get('representantePresente')?.value" class="mt-4 space-y-3">
+          <div>
+            <label class="text-sm text-foreground">Nombre del representante<span class="text-red-500"> *</span></label>
+            <input
+              type="text"
+              formControlName="nombre_representante"
+              class="w-full p-2 bg-white border border-gray-300 rounded"
+            />
+            <div
+              *ngIf="
+                submitted &&
+                muestreoForm.get('nombre_representante')?.invalid
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              Este campo es obligatorio.
+            </div>
+          </div>
+
+          <div>
+            <label class="text-sm text-foreground">DNI del representante<span class="text-red-500"> *</span></label>
+            <input
+              type="text"
+              formControlName="dni_representante"
+              class="w-full p-2 bg-white border border-gray-300 rounded"
+            />
+            <div
+              *ngIf="
+                submitted &&
+                muestreoForm.get('dni_representante')?.invalid
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              Este campo es obligatorio y debe contener 8 dígitos.
+            </div>
+          </div>
+
+          <div>
+            <label class="text-sm text-foreground">Cargo del representante<span class="text-red-500"> *</span></label>
+            <input
+              type="text"
+              formControlName="cargo_representante"
+              class="w-full p-2 bg-white border border-gray-300 rounded"
+            />
+            <div
+              *ngIf="
+                submitted &&
+                muestreoForm.get('cargo_representante')?.invalid
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+           <div> 
+              <label class="text-sm text-foreground">Nombre del Testigo </label>
+              <input type="text"
+                    formControlName="nombre_testigo"
+                    class="w-full p-2 bg-white border border-gray-300 rounded" />
+            </div>
+            <div> 
+              <label class="text-sm text-foreground">DNI del Testigo </label>
+              <input type="text"
+                    formControlName="dni_testigo"
+                    class="w-full p-2 bg-white border border-gray-300 rounded" />
+            </div>
+          </div>
+        </fieldset>
+
+        
+      </div>
+      <div class="max-w-5xl mx-auto w-full">
+    
+</div>
+  <div class="flex justify-center gap-4 pt-2">
+  <button
+    type="button"
+    (click)="Volver()"
+    class="bg-primary text-white px-8 py-2.5 rounded-md hover:bg-[#be123c] font-semibold border border-white/20 transition">
+    Volver
+  </button>
+
+  <!-- Solo en registrar/editar -->
+  <button
+    *ngIf="!modoVer"
+    type="button"
+    (click)="registrar()"
+    class="bg-primary text-white px-8 py-2.5 rounded-md hover:bg-[#be123c] font-semibold border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition">
+    {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+  </button>
+
+  <button
+    *ngIf="!modoVer"
+    type="button"
+    (click)="finalizar()"
+    class="bg-primary text-white px-8 py-2.5 rounded-md hover:bg-[#be123c] font-semibold border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition">
+    Finalizar
+  </button>
+</div>
+    </div>
+  </div>
+</form>

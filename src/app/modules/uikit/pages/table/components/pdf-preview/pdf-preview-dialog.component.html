@@ -1,0 +1,25 @@
+<div class="p-2.5"> <!-- 10px aprox -->
+  <h2 class="text-base font-semibold mb-3">Vista previa del PDF</h2>
+
+  <div class="viewer rounded-md overflow-hidden border border-gray-200">
+    <iframe class="frame" [src]="safeUrl" frameborder="0"></iframe>
+  </div>
+
+  <div class="flex justify-end gap-2 mt-4">
+    <button
+      type="button"
+      class="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 transition"
+      (click)="close()"
+    >
+      Cerrar
+    </button>
+
+    <button
+      type="button"
+      class="px-4 py-2 rounded-md bg-blue-900 text-white hover:bg-blue-700 transition"
+      (click)="descargar()"
+    >
+      Descargar
+    </button>
+  </div>
+</div>

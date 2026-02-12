@@ -1,0 +1,77 @@
+<!-- login form -->
+<form class="my-5 space-y-6" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="text-center">
+    <h2 class="text-foreground mb-1 text-3xl font-semibold">Bienvenido de vuelta <span class="text-foreground">!</span></h2>
+    <p class="text-muted-foreground text-sm">Ingresa tus credenciales</p>
+  </div>
+
+  <!-- <div routerLink="/dashboard">
+    <app-button full impact="bold" tone="light" shape="rounded" size="medium">
+      <svg-icon src="assets/icons/google-logo.svg" [svgClass]="'h-6 w-6 mr-2'"> </svg-icon>
+      Log in with Google
+    </app-button>
+  </div> -->
+
+  <!-- <div
+    class="before:border-muted after:border-muted my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t after:mt-0.5 after:flex-1 after:border-t">
+    <p class="text-muted-foreground mx-4 mb-0 text-center text-sm">or</p>
+  </div> -->
+
+  <div class="space-y-3 text-left text-foreground">
+     <label for="nombre_usuario" color-primary-foreground>Nombre de usuario</label>
+    <div class="form__group">
+      <div class="relative">
+      <input
+        type="text"
+        id="nombre_usuario"
+        formControlName="nombre_usuario"
+        placeholder=" "
+        class="peer block"
+      />
+
+      </div>
+      <div *ngIf="submitted && f['nombre_usuario'].errors" class="is__invalid-error">
+        <div *ngIf="f['nombre_usuario'].errors['required']">Campo requerido</div>
+        <div *ngIf="f['nombre_usuario'].errors['nombre_usuario']">Nombre de usuario incorrecto</div>
+      </div>
+    </div>
+
+    <div class="form__group text-foreground">
+       <label for="clave"  >Contraseña</label>
+      <div class="relative">
+        <input
+          [type]="passwordTextType ? 'text' : 'password'"
+          id="clave"
+          formControlName="clave"
+          placeholder=" "
+          class="peer block"
+        />
+        <span
+          class="text-muted-foreground absolute top-2 cursor-pointer ltr:right-3 rtl:left-3"
+          (click)="togglePasswordTextType()">
+          <svg-icon
+            [src]="
+              !passwordTextType
+                ? 'assets/icons/heroicons/outline/eye-off.svg'
+                : 'assets/icons/heroicons/outline/eye.svg'
+            "
+            [svgClass]="'h-5 w-5'">
+          </svg-icon>
+        </span>
+      </div>
+      <div *ngIf="submitted && f['clave'].errors" class="is__invalid-error">
+        <div *ngIf="f['clave'].errors['required']">Campo Requerido</div>
+      </div>
+    </div>
+  </div>
+
+   
+
+  <!-- Submit Button -->
+  <div>
+
+    <app-button type = submit full impact="bold" tone="primary" shape="rounded" size="medium"
+    >Inciar Sesión</app-button>
+  </div>
+ 
+</form>

@@ -7,16 +7,18 @@ import { AuthGuard } from './core/guards/auth.guard';
 const routes: Routes = [
   
 
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' }, // login como inicio
-  { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule) },
+  // { path: '', redirectTo: 'auth/login', pathMatch: 'full' }, // login como inicio
+  // { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule) },
 
   {
     path: '',
-    loadChildren: () => import('./modules/layout/layout.module').then((m) => m.LayoutModule), canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/layout/layout.module').then((m) => m.LayoutModule), 
+    // canActivate: [AuthGuard],
   },
   {
     path: 'uikit',
-    loadChildren: () => import('./modules/uikit/uikit.module').then((m) => m.UikitModule), canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/uikit/uikit.module').then((m) => m.UikitModule), 
+    // canActivate: [AuthGuard],
   },
   {
     path: 'errors',

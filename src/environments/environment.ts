@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   //base: 'https://produce-backend.bureauveritas.com.pe/backend/',
-  base: 'https://localhost:7052/',
+  base: 'https://localhost:5188/',
 };
 
 

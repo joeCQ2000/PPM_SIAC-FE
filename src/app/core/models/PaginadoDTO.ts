@@ -1,6 +1,6 @@
 export interface PaginadoDTO<T>{
-    Total: number;
-    Page : number;
-    PageSize:  number;
+    total: number;
+    page : number;
+    page_size:  number;
     items: T[];
 }

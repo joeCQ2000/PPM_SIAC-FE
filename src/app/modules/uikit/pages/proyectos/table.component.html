@@ -1,17 +1,14 @@
-<div class="mb-4 flex justify-between">
-   
-  <div class="inline-block space-x-4">
-    <button 
-    (click) = "goToRegistro()"
-    class="bg-primary text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold">
-      Añadir Muestreos
-    </button>
-     
-  </div>
-</div>
-
-
 <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2">
+
+  <div class="px-4 sm:px-6 py-3 space-y-3">
+    <p class="text-xs text-muted-foreground">
+      Movimientos/Proyectos
+    </p>
+
+    <h1 class="text-lg sm:text-2xl font-semibold text-foreground">
+      Proyectos
+    </h1>
+  </div>
   <app-table-action (filtersChanged)="onFiltersChanged()"></app-table-action>
   <div class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto">
   <table

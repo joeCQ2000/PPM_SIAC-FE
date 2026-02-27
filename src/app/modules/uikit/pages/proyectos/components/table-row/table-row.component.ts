@@ -9,6 +9,7 @@ import { PdfPreviewDialogComponent } from '../pdf-preview/pdf-preview-dialog.com
 import { MatDialog } from '@angular/material/dialog';
 import { TablaListadoDeMuestreoDTO } from 'src/app/core/models/TablaListadoDeMuestreoDTO';
 import { proyecto } from 'src/app/core/models/proyecto.model';
+import { ModelProyectoComponent } from '../modelcrear-proyecto/modelcrear-proyecto.component';
 
 @Component({
   selector: '[app-table-row]',
@@ -19,10 +20,10 @@ import { proyecto } from 'src/app/core/models/proyecto.model';
 })
 export class TableRowComponent implements OnInit {
   @Input() item!: proyecto;
-
+    selectedRows: Set<number> = new Set(); 
   private finalizados = new Set<number>();
   especieById = new Map<number, string>();
-
+  proyectos : any[ ] = [];
   constructor(
     private router: Router,
     private pdfService: PdfService,
@@ -33,6 +34,26 @@ export class TableRowComponent implements OnInit {
   ngOnInit() {
     this.cargarFinalizados();
 
+  }
+  isRowSelected(idProyecto: number): boolean {
+    return this.selectedRows.has(idProyecto);
+  }
+
+  toggleRowSelection(idProyecto: number): void {
+    if (this.selectedRows.has(idProyecto)) {
+      this.selectedRows.delete(idProyecto);
+    } else {
+      this.selectedRows.add(idProyecto);
+    }
+  }
+
+
+  getSelectedRows(): number[] {
+    return Array.from(this.selectedRows);
+  }
+
+  clearSelection(): void {
+    this.selectedRows.clear();
   }
 
   private cargarFinalizados(): void {
@@ -50,6 +71,23 @@ export class TableRowComponent implements OnInit {
     const n = Number(id);
     return Number.isFinite(n) && this.finalizados.has(n);
   }
+ abrirModalNuevo() {
+    const dialogRef = this.dialog.open(ModelProyectoComponent, {
+      width: '700px',
+      maxWidth: '90vw',
+      disableClose: false,
+      data: { 
+        modo: 'crear'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Proyecto creado:', result);
+        this.proyectos.push(result);
+      }
+    });
+  }
 
   editarMuestreo(id: number) {
     this.router.navigate(['/components/muestreo_pesca', id]);
@@ -58,7 +96,9 @@ export class TableRowComponent implements OnInit {
   verDetalle(id: number): void {
     this.router.navigate(['/components/muestreo_pesca', id, 'ver']);
   }
-
+  Eliminar(): void{
+    this.router.navigate(['/components/muestreo_pesca']);
+  }
   abrirPDF(id: number) {
     this.pdfService.generarPdf(id).subscribe({
       next: (res) => {

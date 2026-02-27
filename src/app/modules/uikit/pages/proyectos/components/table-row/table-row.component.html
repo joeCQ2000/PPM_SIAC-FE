@@ -1,12 +1,24 @@
 <ng-container>
   
-  <!-- Información principal -->
+  <!-- Información principal CON checkbox -->
   <td>
     <div class="flex items-center gap-2.5">
+      <!-- Checkbox -->
+      <input
+        type="checkbox"
+        class="h-6 w-6 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer shrink-0"
+        [checked]="isRowSelected(item.id_proyecto)"
+        (change)="toggleRowSelection(item.id_proyecto)"
+        [attr.aria-label]="'Seleccionar ' + item.per"
+      />
+      
+      <!-- Avatar -->
       <img
         alt="muestreo icon"
         class="h-9 w-9 shrink-0 rounded-full"
         src="https://ui-avatars.com/api/?name={{ item.id_proyecto }}&background=random" />
+      
+      <!-- Textos -->
       <div class="flex flex-col items-start">
         <span class="text-foreground hover:text-primary text-sm font-semibold">
           {{ item.per}}
@@ -17,13 +29,14 @@
       </div>
     </div>
   </td>
-  <td>{{ item.fecha_registro| date: 'dd/MM/yyyy' }}</td>
 
- <td>
-  <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800">
-    {{ item.nro_contrato }}
-  </span>
-</td>
+  <td>{{ item.fecha_registro | date: 'dd/MM/yyyy' }}</td>
+
+  <td>
+    <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800">
+      {{ item.nro_contrato }}
+    </span>
+  </td>
 
   <td>{{ item.responsable }}</td>
 
@@ -33,33 +46,33 @@
     </span>
   </td>
 
-
   <td class="text-center">
-  <div class="flex items-center justify-center gap-2 ">
-    <!-- Botón EDITAR -->
-    <button
-      *ngIf="!isFinalizado(item.id_proyecto)"
-      class="hover:bg-card text-blue-500 hover:text-primary flex h-8 w-8 items-center justify-center rounded-md transition"
-      title="Editar muestreo"
-      (click)="editarMuestreo(item.id_proyecto)"
-    >
-      <svg-icon
-        src="./assets/icons/heroicons/outline/pencil-square.svg"
-        [svgClass]="'h-5 w-5 text-foreground'"
-      ></svg-icon>
-    </button>
+    <div class="flex items-center justify-center gap-2">
+      <!-- Botón EDITAR -->
+      <button
+        *ngIf="!isFinalizado(item.id_proyecto)"
+        class="hover:bg-card text-blue-500 hover:text-primary flex h-8 w-8 items-center justify-center rounded-md transition"
+        title="Editar muestreo"
+        (click)="editarMuestreo(item.id_proyecto)"
+      >
+        <svg-icon
+          src="./assets/icons/heroicons/outline/pencil-square.svg"
+          [svgClass]="'h-5 w-5 text-foreground'"
+        ></svg-icon>
+      </button>
 
-    <!--Ver detalle-->
-    <button
-      class="hover:bg-card text-red-500 hover:text-primary flex h-8 w-8 items-center justify-center rounded-md transition"
-      title="Ver Detalle"
-      (click)="verDetalle(item.id_proyecto)"
-    >
-      <svg-icon
-        src="./assets/icons/heroicons/outline/eye.svg"
-        [svgClass]="'h-5 w-5 text-foreground'"
-      ></svg-icon>
-    </button>
-  </div>
-</td>
+      <!-- Ver detalle -->
+      <button
+        class="hover:bg-card text-red-500 hover:text-primary flex h-8 w-8 items-center justify-center rounded-md transition"
+        title="Ver Detalle"
+        (click)="verDetalle(item.id_proyecto)"
+      >
+        <svg-icon
+          src="./assets/icons/heroicons/outline/eye.svg"
+          [svgClass]="'h-5 w-5 text-foreground'"
+        ></svg-icon>
+      </button>
+    </div>
+  </td>
+
 </ng-container>

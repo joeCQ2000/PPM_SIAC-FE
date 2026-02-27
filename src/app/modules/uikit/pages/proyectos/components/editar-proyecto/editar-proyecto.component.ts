@@ -8,20 +8,17 @@ import { EspecieService } from 'src/app/core/services/especie';
 import { Especie } from 'src/app/core/models/especie.model';
 import { Embarcaciones } from 'src/app/core/models/embarcaciones.model';
 import { MatriculaService } from 'src/app/core/services/embarcaciones';
-import { Route, Router } from '@angular/router';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { ModelProyectoComponent } from '../modelcrear-proyecto/modelcrear-proyecto.component';
 
 @Component({
   selector: 'app-table-action',
-  imports: [AngularSvgIconModule, CommonModule,  MatDialogModule,],
+  imports: [AngularSvgIconModule, CommonModule],
   standalone: true,
-  templateUrl: './table-action.component.html',
-  styleUrl: './table-action.component.css',
+  templateUrl: './editar-proyecto.component.html',
+  styleUrl: './editar-proyecto.component.css',
 })
 export class TableActionComponent implements OnInit {
   @Output() filtersChanged = new EventEmitter<void>();
-  proyectos : any[]=[];
+
   especies: Especie[] = [];
   embarcaciones : Embarcaciones[] =[];
 
@@ -33,8 +30,6 @@ export class TableActionComponent implements OnInit {
     public filterService: TableFilterService,
     private especieService: EspecieService,
     private embarcacionesService : MatriculaService,
-    private router : Router,
-    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -87,29 +82,7 @@ export class TableActionComponent implements OnInit {
     this.filterService.NombreComun.set(v === '0' ? '' : v);
     this.filtersChanged.emit();
   }
-  Nuevo(): void{
-  this.router.navigate(['/components/modelcrearproyecto']);
-  }
- Eliminar(): void{
-    this.router.navigate(['/components/muestreo_pesca']);
-  }
-  abrirModalNuevo() {
-    const dialogRef = this.dialog.open(ModelProyectoComponent, {
-      width: '700px',
-      maxWidth: '90vw',
-      disableClose: false,
-      data: { 
-        modo: 'crear'
-      }
-    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log('Proyecto creado:', result);
-        this.proyectos.push(result);
-      }
-    });
-  }
   resetFilters(
     searchInput: HTMLInputElement,
     selectMatricula: HTMLSelectElement,

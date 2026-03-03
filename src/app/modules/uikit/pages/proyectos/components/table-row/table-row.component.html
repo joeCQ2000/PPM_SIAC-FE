@@ -1,34 +1,32 @@
 <ng-container>
   
   <!-- Información principal CON checkbox -->
-  <td>
+  <th>
     <div class="flex items-center gap-2.5">
       <!-- Checkbox -->
-      <input
-        type="checkbox"
-        class="h-6 w-6 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer shrink-0"
-        [checked]="isRowSelected(item.id_proyecto)"
-        (change)="toggleRowSelection(item.id_proyecto)"
-        [attr.aria-label]="'Seleccionar ' + item.per"
-      />
+     <th class="py-3 px-4 text-left w-12">
+    <input 
+      type="checkbox" 
+      [checked]="isSelected"
+      (change)="onCheckboxClick($event)"
+      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded 
+             focus:ring-blue-500 focus:ring-2 cursor-pointer">
+  </th>
       
       <!-- Avatar -->
-      <img
+      <!-- <img
         alt="muestreo icon"
         class="h-9 w-9 shrink-0 rounded-full"
         src="https://ui-avatars.com/api/?name={{ item.id_proyecto }}&background=random" />
-      
+       -->
       <!-- Textos -->
       <div class="flex flex-col items-start">
         <span class="text-foreground hover:text-primary text-sm font-semibold">
           {{ item.per}}
         </span>
-         <span class="text-foreground hover:text-primary text-sm font-semibold">
-          {{ item.servicio}}
-        </span>
       </div>
     </div>
-  </td>
+  </th>
 
   <td>{{ item.fecha_registro | date: 'dd/MM/yyyy' }}</td>
 
@@ -48,18 +46,6 @@
 
   <td class="text-center">
     <div class="flex items-center justify-center gap-2">
-      <!-- Botón EDITAR -->
-      <button
-        *ngIf="!isFinalizado(item.id_proyecto)"
-        class="hover:bg-card text-blue-500 hover:text-primary flex h-8 w-8 items-center justify-center rounded-md transition"
-        title="Editar muestreo"
-        (click)="editarMuestreo(item.id_proyecto)"
-      >
-        <svg-icon
-          src="./assets/icons/heroicons/outline/pencil-square.svg"
-          [svgClass]="'h-5 w-5 text-foreground'"
-        ></svg-icon>
-      </button>
 
       <!-- Ver detalle -->
       <button

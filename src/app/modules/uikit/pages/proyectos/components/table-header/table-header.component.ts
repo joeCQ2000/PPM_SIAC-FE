@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,6 +9,8 @@ import { CommonModule } from '@angular/common';
 })
 export class TableHeaderComponent {
   @Output() onCheck = new EventEmitter<boolean>();
+  @Input() allSelected: boolean = false; 
+  @Input() someSelected: boolean = false;
 
   onHeaderCheck(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;

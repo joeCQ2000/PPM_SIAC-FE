@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -11,6 +11,7 @@ import { MatriculaService } from 'src/app/core/services/embarcaciones';
 import { Route, Router } from '@angular/router';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ModelProyectoComponent } from '../modelcrear-proyecto/modelcrear-proyecto.component';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-table-action',
@@ -21,6 +22,9 @@ import { ModelProyectoComponent } from '../modelcrear-proyecto/modelcrear-proyec
 })
 export class TableActionComponent implements OnInit {
   @Output() filtersChanged = new EventEmitter<void>();
+  @Output() proyectoRegistrado = new EventEmitter<any>(); 
+  @Input() selectedCount: number = 0; // ✅ Recibe cantidad seleccionada
+  @Output() eliminarClick = new EventEmitter<void>();
   proyectos : any[]=[];
   especies: Especie[] = [];
   embarcaciones : Embarcaciones[] =[];
@@ -61,7 +65,9 @@ export class TableActionComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     this.search$.next(input.value);
   }
-
+  onEliminarClick(): void {
+    this.eliminarClick.emit();
+  }
   onMatriculaChange(event: Event) {
     const select = event.target as HTMLSelectElement;
     const v = select.value;
@@ -95,8 +101,8 @@ export class TableActionComponent implements OnInit {
   }
   abrirModalNuevo() {
     const dialogRef = this.dialog.open(ModelProyectoComponent, {
-      width: '700px',
-      maxWidth: '90vw',
+      width: '1000px',
+      maxWidth: '80vw',
       disableClose: false,
       data: { 
         modo: 'crear'
@@ -104,11 +110,12 @@ export class TableActionComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log('Proyecto creado:', result);
-        this.proyectos.push(result);
-      }
-    });
+    if (result) {  // ← result contiene la respuesta del backend
+      console.log('Proyecto registrado:', result);
+       this.proyectoRegistrado.emit(result);
+      // Opcional: mostrar notificación
+    }
+  });
   }
   resetFilters(
     searchInput: HTMLInputElement,

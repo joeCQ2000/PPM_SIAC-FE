@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -8,8 +8,9 @@ import { EspecieService } from 'src/app/core/services/especie';
 import { PdfPreviewDialogComponent } from '../pdf-preview/pdf-preview-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TablaListadoDeMuestreoDTO } from 'src/app/core/models/TablaListadoDeMuestreoDTO';
-import { proyecto } from 'src/app/core/models/proyecto.model';
+
 import { ModelProyectoComponent } from '../modelcrear-proyecto/modelcrear-proyecto.component';
+import { Proyecto } from 'src/app/core/models/proyecto.model';
 
 @Component({
   selector: '[app-table-row]',
@@ -19,7 +20,10 @@ import { ModelProyectoComponent } from '../modelcrear-proyecto/modelcrear-proyec
   styleUrl: './table-row.component.css',
 })
 export class TableRowComponent implements OnInit {
-  @Input() item!: proyecto;
+  @Input() item!: Proyecto;
+  @Input() isSelected: boolean = false; 
+  @Output() checkboxChange = new EventEmitter<boolean>(); 
+
     selectedRows: Set<number> = new Set(); 
   private finalizados = new Set<number>();
   especieById = new Map<number, string>();
@@ -34,6 +38,10 @@ export class TableRowComponent implements OnInit {
   ngOnInit() {
     this.cargarFinalizados();
 
+  }
+  onCheckboxClick(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.checkboxChange.emit(checkbox.checked);
   }
   isRowSelected(idProyecto: number): boolean {
     return this.selectedRows.has(idProyecto);

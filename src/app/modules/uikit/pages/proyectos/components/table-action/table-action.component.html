@@ -113,11 +113,23 @@
   </div> <!-- /*ngIf mostrarAvanzado -->
  <!--Botones de la tabla -->
      <div class="flex justify-end px-6 py-4 gap-3 border-t border-[#1A1A1A]/70 py-3">
-        <button type="button"
-                class="bg-red-600 text-primary-foreground rounded-md px-5 py-2.5 text-xs font-semibold hover:bg-red-550 transition-colors"
-                (click)="Eliminar()">
-          ELIMINAR
-        </button>
+      <button 
+    (click)="onEliminarClick()"
+    [disabled]="selectedCount === 0"
+    [class.opacity-50]="selectedCount === 0"
+    [class.cursor-not-allowed]="selectedCount === 0"
+    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 
+           flex items-center gap-2 transition-all duration-200
+           disabled:hover:bg-red-600">
+    Eliminar
+    <!-- Badge -->
+    <span 
+      *ngIf="selectedCount > 0"
+      class="px-2 py-0.5 bg-red-800 text-white text-xs font-bold rounded-full">
+      {{ selectedCount }}
+    </span>
+  </button>
+
 
        <button (click)="abrirModalNuevo()" 
        class="bg-[#2C32FF] text-white rounded-md px-5 py-2.5 text-xs font-semibold hover:bg-[#2C32FF] transition-colors">

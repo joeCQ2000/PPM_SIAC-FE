@@ -13,7 +13,9 @@ import { TableRowComponent } from './components/table-row/table-row.component';
 import { TableActionComponent } from './components/table-action/table-action.component';
 import { CommonModule } from '@angular/common';
 import { PaginadoDTO } from 'src/app/core/models/PaginadoDTO';
-import { proyecto } from 'src/app/core/models/proyecto.model';
+import { Proyecto } from 'src/app/core/models/proyecto.model';
+import Swal from 'sweetalert2';
+import { ProyectoService } from 'src/app/core/services/proyecto.service';
 
 @Component({
   selector: 'app-table',
@@ -25,23 +27,53 @@ import { proyecto } from 'src/app/core/models/proyecto.model';
 export class ProyectoComponent implements OnInit {
   private readonly url = environment.base; // asegúrate que tenga / al final o ajusta abajo
 
-  items = signal<proyecto[]>([]);
+  items = signal<Proyecto[]>([]);
   totalRegistros = signal(0);
 
   paginas = signal(1);
   tamanioPagina = signal(10);
 
+  selectedIds = signal<number[]>([]);
+ 
+  selectedCount = computed(() => this.selectedIds().length);
+
   totalpaginas = computed(() =>
     Math.ceil(this.totalRegistros() / this.tamanioPagina())
   );
+    allSelected = computed(() => {
+    const itemsCount = this.items().length;
+    return itemsCount > 0 && this.selectedIds().length === itemsCount;
+  });
+   someSelected = computed(() => {
+    const count = this.selectedIds().length;
+    return count > 0 && count < this.items().length;
+  });
+
 
   constructor(
     private http: HttpClient,
     private filterService: TableFilterService,
-    private router: Router
+    private router: Router,
+    private proyectoservice : ProyectoService    
   ) {}
 
   ngOnInit() {
+    this.cargarPagina(1);
+  }
+  toggleSelectAll(checked: boolean): void {
+    console.log('🔵 Toggle select all:', checked);
+    
+    if (checked) {
+      // Seleccionar todos los IDs de la página actual
+      const allIds = this.items().map(item => item.id_proyecto); // ← Ajusta según tu modelo
+      this.selectedIds.set(allIds);
+    } else {
+      // Deseleccionar todos
+      this.selectedIds.set([]);
+    }
+  }
+  onProyectoRegistrado(proyecto: any) {
+    console.log('Recargando tabla después del registro:', proyecto);
     this.cargarPagina(1);
   }
 
@@ -75,6 +107,8 @@ export class ProyectoComponent implements OnInit {
         this.items.set(items);
         this.totalRegistros.set(total);
         this.paginas.set(curPage);
+
+         this.selectedIds.set([]);
       },
       error: (error) => this.handleRequestError(error)
     });
@@ -90,7 +124,109 @@ onFiltersChanged() {
     this.tamanioPagina.set(s);
     this.cargarPagina(1);
   }
+   onCheckboxChange(id: number, checked: boolean): void {
+    console.log('🔵 Checkbox changed:', { id, checked }); // ← AGREGAR
   
+  if (checked) {
+    this.selectedIds.update(ids => {
+      const newIds = [...ids, id];
+      console.log('✅ IDs después de agregar:', newIds); // ← AGREGAR
+      return newIds;
+    });
+  } else {
+    this.selectedIds.update(ids => {
+      const newIds = ids.filter(i => i !== id);
+      console.log('❌ IDs después de remover:', newIds); // ← AGREGAR
+      return newIds;
+    });
+  }
+  
+  console.log('📊 selectedCount:', this.selectedCount());
+  }
+
+  // ✅ VERIFICAR SI UN ID ESTÁ SELECCIONADO
+  isSelected(id: number): boolean {
+    return this.selectedIds().includes(id);
+  }
+
+  // ✅ ELIMINAR SELECCIONADOS
+  eliminarSeleccionados(): void {
+    const ids = this.selectedIds();
+    
+    if (ids.length === 0) {
+      toast.error('No hay proyectos seleccionados', {
+        position: 'bottom-right',
+        duration: 2000
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Se eliminarán ${ids.length} proyecto(s)`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#1E293B',
+      color: '#ffff'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.ejecutarEliminacion(ids);
+      }
+    });
+  }
+  private ejecutarEliminacion(ids: number[]): void {
+    let completados = 0;
+    let errores = 0;
+
+    ids.forEach(id_proyecto => {
+      this.proyectoservice.Eliminar(id_proyecto).subscribe({
+        next: () => {
+          completados++;
+          if (completados + errores === ids.length) {
+            this.finalizarEliminacion(completados, errores);
+          }
+        },
+        error: () => {
+          errores++;
+          if (completados + errores === ids.length) {
+            this.finalizarEliminacion(completados, errores);
+          }
+        }
+      });
+    });
+  }
+private finalizarEliminacion(exitosos: number, fallidos: number): void {
+    this.selectedIds.set([]); // Limpiar selección
+    this.cargarPagina(this.paginas()); // Recargar tabla
+
+    if (fallidos === 0) {
+      Swal.fire({
+        icon: 'success',
+        title: `${exitosos} proyecto(s) eliminado(s)`,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        background: '#1E293B',
+        color: '#ffff'
+      });
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: `${exitosos} eliminados, ${fallidos} fallidos`,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        background: '#1E293B',
+        color: '#ffff'
+      });
+    }
+  }
   private handleRequestError(error: any) {
     toast.error('Error al cargar listado', {
       position: 'bottom-right',

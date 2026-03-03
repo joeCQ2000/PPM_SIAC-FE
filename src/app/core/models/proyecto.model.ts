@@ -1,4 +1,4 @@
-export interface proyecto{
+export interface Proyecto{
     id_proyecto : number,
     nro_contrato: string,
     per: string,
@@ -9,4 +9,5 @@ export interface proyecto{
     fecha_inicio: Date,
     fecha_registro: Date,
     estado : boolean,
+    descripcion: string,
 }

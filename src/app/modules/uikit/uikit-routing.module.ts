@@ -5,7 +5,7 @@ import { TableComponent } from './pages/table/table.component';
 import { MuestreoPescaComponent } from './pages/muestreo_pesca/muestreo_pesca.component';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { ProyectoComponent } from './pages/proyectos/proyecto.component';
-import { ModelProyectoComponent } from './pages/proyectos/components/modelcrear-proyecto/modelcrear-proyecto.component';
+import { ModelProyectoComponent } from './pages/proyectos/components/modelcreaedita-proyecto/modelcrear-proyecto.component';
 
 const routes: Routes = [
   {
@@ -17,6 +17,7 @@ const routes: Routes = [
        { path: 'muestreo_pesca', component: MuestreoPescaComponent },
        {path: 'proyectos', component: ProyectoComponent},
         { path: 'muestreo_pesca/:id', component: MuestreoPescaComponent },
+        { path:'proyectos/:id',   component:ProyectoComponent},
          { path: 'modelcrearproyecto', component: ModelProyectoComponent },
         { path: 'muestreo_pesca/:id/ver', component: MuestreoPescaComponent }, 
       { path: '**', redirectTo: 'errors/404' },

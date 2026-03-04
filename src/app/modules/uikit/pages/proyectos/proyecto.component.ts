@@ -61,14 +61,13 @@ export class ProyectoComponent implements OnInit {
     this.cargarPagina(1);
   }
   toggleSelectAll(checked: boolean): void {
-    console.log('🔵 Toggle select all:', checked);
     
     if (checked) {
-      // Seleccionar todos los IDs de la página actual
-      const allIds = this.items().map(item => item.id_proyecto); // ← Ajusta según tu modelo
+
+      const allIds = this.items().map(item => item.id_proyecto); 
       this.selectedIds.set(allIds);
     } else {
-      // Deseleccionar todos
+ 
       this.selectedIds.set([]);
     }
   }
@@ -125,31 +124,27 @@ onFiltersChanged() {
     this.cargarPagina(1);
   }
    onCheckboxChange(id: number, checked: boolean): void {
-    console.log('🔵 Checkbox changed:', { id, checked }); // ← AGREGAR
   
   if (checked) {
     this.selectedIds.update(ids => {
       const newIds = [...ids, id];
-      console.log('✅ IDs después de agregar:', newIds); // ← AGREGAR
       return newIds;
     });
   } else {
     this.selectedIds.update(ids => {
       const newIds = ids.filter(i => i !== id);
-      console.log('❌ IDs después de remover:', newIds); // ← AGREGAR
       return newIds;
     });
   }
   
-  console.log('📊 selectedCount:', this.selectedCount());
+  console.log('selectedCount:', this.selectedCount());
   }
 
-  // ✅ VERIFICAR SI UN ID ESTÁ SELECCIONADO
+
   isSelected(id: number): boolean {
     return this.selectedIds().includes(id);
   }
 
-  // ✅ ELIMINAR SELECCIONADOS
   eliminarSeleccionados(): void {
     const ids = this.selectedIds();
     

@@ -9,7 +9,7 @@ import { PdfPreviewDialogComponent } from '../pdf-preview/pdf-preview-dialog.com
 import { MatDialog } from '@angular/material/dialog';
 import { TablaListadoDeMuestreoDTO } from 'src/app/core/models/TablaListadoDeMuestreoDTO';
 
-import { ModelProyectoComponent } from '../modelcrear-proyecto/modelcrear-proyecto.component';
+import { ModelProyectoComponent } from '../modelcreaedita-proyecto/modelcrear-proyecto.component';
 import { Proyecto } from 'src/app/core/models/proyecto.model';
 
 @Component({
@@ -102,7 +102,7 @@ export class TableRowComponent implements OnInit {
   }
 
   verDetalle(id: number): void {
-    this.router.navigate(['/components/muestreo_pesca', id, 'ver']);
+    this.router.navigate(['/components/proyectos', id]);
   }
   Eliminar(): void{
     this.router.navigate(['/components/muestreo_pesca']);

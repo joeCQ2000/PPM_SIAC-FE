@@ -1,0 +1,24 @@
+/* Scroll horizontal en pantallas pequeñas */
+@media (max-width: 768px) {
+  .scrollbar-thumb-rounded {
+    overflow-x: auto;
+  }
+  
+  table {
+    min-width: 800px; /* Ancho mínimo para evitar colapso */
+  }
+}
+
+/* Opcional: Ocultar columnas menos importantes en móviles */
+@media (max-width: 640px) {
+  /* Ocultar columna de servicio en móviles */
+  table th:nth-child(6),
+  table td:nth-child(6) {
+    display: none;
+  }
+  
+  /* Ajustar colgroup */
+  colgroup col:nth-child(6) {
+    width: 0;
+  }
+}

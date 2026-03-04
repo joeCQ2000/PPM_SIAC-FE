@@ -10,7 +10,7 @@ import { Embarcaciones } from 'src/app/core/models/embarcaciones.model';
 import { MatriculaService } from 'src/app/core/services/embarcaciones';
 import { Route, Router } from '@angular/router';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { ModelProyectoComponent } from '../modelcrear-proyecto/modelcrear-proyecto.component';
+import { ModelProyectoComponent } from '../modelcreaedita-proyecto/modelcrear-proyecto.component';
 import { toast } from 'ngx-sonner';
 
 @Component({

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableActionComponent } from './editar-proyecto.component';
+import { ModelProyectoComponent } from './modelcrear-proyecto.component';
 
 describe('TableActionComponent', () => {
-  let component: TableActionComponent;
-  let fixture: ComponentFixture<TableActionComponent>;
+  let component: ModelProyectoComponent;
+  let fixture: ComponentFixture<ModelProyectoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableActionComponent],
+      imports: [ModelProyectoComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TableActionComponent);
+    fixture = TestBed.createComponent(ModelProyectoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

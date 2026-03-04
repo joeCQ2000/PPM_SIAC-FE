@@ -16,6 +16,8 @@ import { PaginadoDTO } from 'src/app/core/models/PaginadoDTO';
 import { Proyecto } from 'src/app/core/models/proyecto.model';
 import Swal from 'sweetalert2';
 import { ProyectoService } from 'src/app/core/services/proyecto.service';
+import { ingreso } from 'src/app/core/models/ingreso.model';
+import { IngresoService } from 'src/app/core/services/ingreso.service';
 
 @Component({
   selector: 'app-table',
@@ -27,7 +29,7 @@ import { ProyectoService } from 'src/app/core/services/proyecto.service';
 export class IngresosComponent implements OnInit {
   private readonly url = environment.base; // asegúrate que tenga / al final o ajusta abajo
 
-  items = signal<Proyecto[]>([]);
+  items = signal<ingreso[]>([]);
   totalRegistros = signal(0);
 
   paginas = signal(1);
@@ -54,7 +56,7 @@ export class IngresosComponent implements OnInit {
     private http: HttpClient,
     private filterService: TableFilterService,
     private router: Router,
-    private proyectoservice : ProyectoService    
+    private ingresoservice : IngresoService    
   ) {}
 
   ngOnInit() {
@@ -64,7 +66,7 @@ export class IngresosComponent implements OnInit {
     
     if (checked) {
 
-      const allIds = this.items().map(item => item.id_proyecto); 
+      const allIds = this.items().map(item => item.id_ingreso); 
       this.selectedIds.set(allIds);
     } else {
  
@@ -77,7 +79,7 @@ export class IngresosComponent implements OnInit {
   }
 
   cargarPagina(page: number) {
-  const endpoint = `${this.url}api/Proyecto/ListarProyectosPaginado`;
+  const endpoint = `${this.url}api/Ingresos/ListarIngresos`;
 
   let params = new HttpParams()
     .set('page', String(page))
@@ -149,7 +151,7 @@ onFiltersChanged() {
     const ids = this.selectedIds();
     
     if (ids.length === 0) {
-      toast.error('No hay proyectos seleccionados', {
+      toast.error('No hay ingresos seleccionados', {
         position: 'bottom-right',
         duration: 2000
       });
@@ -158,7 +160,7 @@ onFiltersChanged() {
 
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Se eliminarán ${ids.length} proyecto(s)`,
+      text: `Se eliminarán ${ids.length} ingreso(s)`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
@@ -177,8 +179,8 @@ onFiltersChanged() {
     let completados = 0;
     let errores = 0;
 
-    ids.forEach(id_proyecto => {
-      this.proyectoservice.Eliminar(id_proyecto).subscribe({
+    ids.forEach(id_ingreso => {
+      this.ingresoservice.Eliminar(id_ingreso).subscribe({
         next: () => {
           completados++;
           if (completados + errores === ids.length) {

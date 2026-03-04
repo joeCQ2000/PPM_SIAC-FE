@@ -18,7 +18,10 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/cube.svg',
           label: 'Movimientos',
           route: '/components',
-          children: [{ label: 'Proyecto', route: '/components/proyectos' }],
+          children: [{ label: 'Proyecto', route: '/components/proyectos' },
+            { label: 'Ingresos', route: '/components/ingresos' },
+             { label: 'Egresos', route: '/components/egresos' }
+          ],
           
         },
       ],

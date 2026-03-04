@@ -9,8 +9,9 @@ import { PdfPreviewDialogComponent } from '../pdf-preview/pdf-preview-dialog.com
 import { MatDialog } from '@angular/material/dialog';
 import { TablaListadoDeMuestreoDTO } from 'src/app/core/models/TablaListadoDeMuestreoDTO';
 
-import { ModelProyectoComponent } from '../modelcreaedita-proyecto/modelcrear-proyecto.component';
+import { ModelIngresoComponent } from '../modelcreaedita-ingreso/modelcreaedita-ingreso.component';
 import { Proyecto } from 'src/app/core/models/proyecto.model';
+import { ingreso } from 'src/app/core/models/ingreso.model';
 
 @Component({
   selector: '[app-table-row]',
@@ -20,18 +21,17 @@ import { Proyecto } from 'src/app/core/models/proyecto.model';
   styleUrl: './table-row.component.css',
 })
 export class TableRowComponent implements OnInit {
-  @Input() item!: Proyecto;
+  @Input() item2!: ingreso;
   @Input() isSelected: boolean = false; 
   @Output() checkboxChange = new EventEmitter<boolean>(); 
 
     selectedRows: Set<number> = new Set(); 
   private finalizados = new Set<number>();
   especieById = new Map<number, string>();
-  proyectos : any[ ] = [];
+  ingresos : any[ ] = [];
   constructor(
     private router: Router,
     private pdfService: PdfService,
-    private especieservice: EspecieService,
     private dialog: MatDialog
   ) {}
  
@@ -43,15 +43,15 @@ export class TableRowComponent implements OnInit {
     const checkbox = event.target as HTMLInputElement;
     this.checkboxChange.emit(checkbox.checked);
   }
-  isRowSelected(idProyecto: number): boolean {
-    return this.selectedRows.has(idProyecto);
+  isRowSelected(idIngreso: number): boolean {
+    return this.selectedRows.has(idIngreso);
   }
 
-  toggleRowSelection(idProyecto: number): void {
-    if (this.selectedRows.has(idProyecto)) {
-      this.selectedRows.delete(idProyecto);
+  toggleRowSelection(idIngreso: number): void {
+    if (this.selectedRows.has(idIngreso)) {
+      this.selectedRows.delete(idIngreso);
     } else {
-      this.selectedRows.add(idProyecto);
+      this.selectedRows.add(idIngreso);
     }
   }
 
@@ -80,7 +80,7 @@ export class TableRowComponent implements OnInit {
     return Number.isFinite(n) && this.finalizados.has(n);
   }
  abrirModalNuevo() {
-    const dialogRef = this.dialog.open(ModelProyectoComponent, {
+    const dialogRef = this.dialog.open(ModelIngresoComponent, {
       width: '700px',
       maxWidth: '90vw',
       disableClose: false,
@@ -91,8 +91,8 @@ export class TableRowComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Proyecto creado:', result);
-        this.proyectos.push(result);
+        console.log('Ingreso creado:', result);
+        this.ingresos.push(result);
       }
     });
   }
@@ -102,7 +102,7 @@ export class TableRowComponent implements OnInit {
   }
 
   verDetalle(id: number): void {
-    this.router.navigate(['/components/proyectos', id]);
+    this.router.navigate(['/components/ingresos', id]);
   }
   Eliminar(): void{
     this.router.navigate(['/components/muestreo_pesca']);

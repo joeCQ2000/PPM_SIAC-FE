@@ -6,95 +6,110 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { ProyectoService } from 'src/app/core/services/proyecto.service';
 import Swal from 'sweetalert2';
 import { Proyecto } from 'src/app/core/models/proyecto.model';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
+import { IngresoService } from 'src/app/core/services/ingreso.service';
+import { ingreso } from 'src/app/core/models/ingreso.model';
 
 @Component({
-  selector: 'app-modal-proyecto',
-  templateUrl: './modelcrear-proyecto.component.html',
+  selector: 'app-modal-ingreso',
+  templateUrl: './modelcreaedita-ingreso.component.html',
   standalone: true,
   imports: [
-    CommonModule,          
+    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatButtonModule     
-  ]
+    MatButtonModule,
+]
 })
-export class ModelProyectoComponent implements OnDestroy {
-  proyectoForm: FormGroup;
+export class ModelIngresoComponent implements OnDestroy {
+  ingresoForm: FormGroup;
   submitted = false;
-  proyecto: Proyecto[] = [];
+  ingreso: ingreso[] = [];
   
   // Propiedades para controlar el modo
   modoEdicion: boolean = false;
   tituloModal: string = 'Crear Proyecto';
-  proyectoId?: number;
+  ingresoid?: number;
+  tipoMoneda =[
+    {valor:'SOLES',etiqueta:'SOLES'},
+    {valor:'DOLARES',etiqueta:'DOLARES'}
 
+  ]
+  tiposDocumento = [
+    { valor: 'PROVISION', etiqueta: 'PROVISIÓN' },
+    { valor: 'FACTURA', etiqueta: 'FACTURA' },
+    { valor: 'DEUDA', etiqueta: 'DEUDA' }
+  ];
   private destroy$ = new Subject<void>();
 
   constructor(
-    public dialogRef: MatDialogRef<ModelProyectoComponent>,
+    public dialogRef: MatDialogRef<ModelIngresoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
-    private proyectoservice: ProyectoService,
+    private ingresoservice: IngresoService,
     private router: Router
   ) {
     // Inicializar formulario
-    this.proyectoForm = this.fb.group({
-      nro_contrato: ['', Validators.required],
-      per: ['', Validators.required],
-      estado: [true],
-      id_cliente: ['', Validators.required],
-      centro_costo: [''],
-      servicio: [''],
-      responsable: [''],
-      fecha_inicio: [''],
-      fecha_registro: [{ value: new Date().toISOString().split('T')[0], disabled: true }],
-      descripcion: ['']
+    this.ingresoForm = this.fb.group({
+      id_proyecto : ['', Validators.required],
+      tipo_documento: ['', Validators.required],
+      afect_impuestos: [false],
+      tasa_cambio: ['', Validators.required],
+      moneda: [''],
+      valor_venta: [''],
+      fecha_emision: [''],
+      fecha_vencimiento: [''],
+      impuesto:[''],
+      total_documento: [''],
+      //fecha_registro: [{ value: new Date().toISOString().split('T')[0], disabled: true }],
+      observacion: [''],
+      estado:[true]
     });
     this.configurarModoEdicion();
   }
 
   private configurarModoEdicion(): void {
-    if (this.data?.modo === 'editar' && this.data?.proyecto) {
+    if (this.data?.modo === 'editar' && this.data?.ingreso) {
       this.modoEdicion = true;
-      this.tituloModal = 'Editar Proyecto';
-      this.proyectoId = this.data.proyecto.id;
+      this.tituloModal = 'Editar Ingreso';
+      this.ingresoid = this.data.ingreso.id;
 
-      this.proyectoForm.patchValue({
-        nro_contrato: this.data.proyecto.nro_contrato,
-        per: this.data.proyecto.per,
-        estado: this.data.proyecto.estado ?? true,
-        id_cliente: this.data.proyecto.id_cliente,
-        centro_costo: this.data.proyecto.centro_costo || '',
-        servicio: this.data.proyecto.servicio || '',
-        responsable: this.data.proyecto.responsable || '',
-        fecha_inicio: this.data.proyecto.fecha_inicio || '',
-        descripcion: this.data.proyecto.descripcion || ''
+      this.ingresoForm.patchValue({
+        id_proyecto: this.data.ingreso.nro_contrato,
+        tipo_documento: this.data.ingreso.tipo_documento,
+        afect_impuestos: this.data.ingreso.afect_impuestos ?? false,
+        tasa_cambio: this.data.ingreso.tasa_cambio,
+        valor_venta: this.data.ingreso.valor_venta || '',
+        impuesto: this.data.ingreso.impuesto || '',
+        observacion: this.data.ingreso.observacion || '',
+        fecha_emision: this.data.ingreso.fecha_emision || '',
+        fecha_vencimiento: this.data.ingreso.fecha_vencimiento || '',
+        total_documento: this.data.ingreso.total_documento || '',
+        estado: this.data.ingreso.estado ?? false,
       });
-      if (this.data.proyecto.fecha_registro) {
-        this.proyectoForm.patchValue({
-          fecha_registro: this.data.proyecto.fecha_registro
+      if (this.data.ingreso.fecha_registro) {
+        this.ingresoForm.patchValue({
+          fecha_registro: this.data.ingreso.fecha_registro
         });
       }
     } else {
       this.modoEdicion = false;
-      this.tituloModal = 'Crear Proyecto';
+      this.tituloModal = 'Crear Ingreso';
     }
   }
 
   registrar(): void {
     this.submitted = true;
 
-    if (this.proyectoForm.invalid) {
-      this.proyectoForm.markAllAsTouched();
+    if (this.ingresoForm.invalid) {
+      this.ingresoForm.markAllAsTouched();
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       Swal.fire({
@@ -110,26 +125,26 @@ export class ModelProyectoComponent implements OnDestroy {
       });
       return;
     }
-    const proyectoData = this.proyectoForm.getRawValue();
+    const ingresoData = this.ingresoForm.getRawValue();
 
-    if (this.modoEdicion && this.proyectoId) {
+    if (this.modoEdicion && this.ingresoid) {
       // Modo edición
-      this.actualizarProyecto(proyectoData);
+      this.actualizarIngreso(ingresoData);
     } else {
       // Modo creación
-      this.crearProyecto(proyectoData);
+      this.crearIngreso(ingresoData);
     }
   }
 
-  private crearProyecto(proyectoData: any): void {
-    this.proyectoservice.Registrar(proyectoData)
+  private crearIngreso(ingresoData: any): void {
+    this.ingresoservice.Registrar(ingresoData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (resp) => {
           console.log('Registro exitoso', resp);
           Swal.fire({
             icon: 'success',
-            title: 'Proyecto registrado correctamente',
+            title: 'Ingreso registrado correctamente',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -158,18 +173,16 @@ export class ModelProyectoComponent implements OnDestroy {
       });
   }
 
-  private actualizarProyecto(proyectoData: any): void {
+  private actualizarIngreso(ingresoData: any): void {
     // Agregar el ID al objeto de datos
-    const dataConId = { ...proyectoData, id: this.proyectoId };
-
-    this.proyectoservice.Actualizar(this.proyectoId!, dataConId)
+    this.ingresoservice.Actualizar(this.ingresoid!)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (resp) => {
           console.log('Actualización exitosa', resp);
           Swal.fire({
             icon: 'success',
-            title: 'Proyecto actualizado correctamente',
+            title: 'Ingreso actualizado correctamente',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -199,7 +212,7 @@ export class ModelProyectoComponent implements OnDestroy {
   }
 
   cerrar(): void {
-    if (this.proyectoForm.dirty) {
+    if (this.ingresoForm.dirty) {
       Swal.fire({
         title: '¿Descartar cambios?',
         text: 'Los cambios no guardados se perderán',
@@ -232,7 +245,7 @@ export class ModelProyectoComponent implements OnDestroy {
   }
 
   obtenerMensajeError(nombreCampo: string): string {
-    const control = this.proyectoForm.get(nombreCampo);
+    const control = this.ingresoForm.get(nombreCampo);
     
     if (control?.hasError('required')) {
       return 'Este campo es obligatorio';
@@ -241,7 +254,7 @@ export class ModelProyectoComponent implements OnDestroy {
     return '';
   }
   tieneError(nombreCampo: string): boolean {
-    const control = this.proyectoForm.get(nombreCampo);
+    const control = this.ingresoForm.get(nombreCampo);
     return !!(control?.invalid && (control?.dirty || control?.touched || this.submitted));
   }
 }

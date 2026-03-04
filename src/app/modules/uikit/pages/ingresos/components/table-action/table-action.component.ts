@@ -10,7 +10,7 @@ import { Embarcaciones } from 'src/app/core/models/embarcaciones.model';
 import { MatriculaService } from 'src/app/core/services/embarcaciones';
 import { Route, Router } from '@angular/router';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { ModelProyectoComponent } from '../modelcreaedita-proyecto/modelcrear-proyecto.component';
+import { ModelIngresoComponent } from '../modelcreaedita-ingreso/modelcreaedita-ingreso.component';
 import { toast } from 'ngx-sonner';
 
 @Component({
@@ -100,7 +100,7 @@ export class TableActionComponent implements OnInit {
     this.router.navigate(['/components/muestreo_pesca']);
   }
   abrirModalNuevo() {
-    const dialogRef = this.dialog.open(ModelProyectoComponent, {
+    const dialogRef = this.dialog.open(ModelIngresoComponent, {
       width: '1000px',
       maxWidth: '80vw',
       disableClose: false,

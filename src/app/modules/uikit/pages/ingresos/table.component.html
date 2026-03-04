@@ -2,11 +2,11 @@
 
   <div class="px-4 sm:px-6 py-3 space-y-3">
     <p class="text-xs text-muted-foreground">
-      Movimientos/Proyectos
+      Movimientos/Ingresos
     </p>
 
     <h1 class="text-lg sm:text-2xl font-semibold text-foreground">
-      Proyectos
+      Ingresos
     </h1>
   </div>
   <app-table-action (filtersChanged)="onFiltersChanged()"
@@ -23,10 +23,10 @@
   </tr>
     </thead>
     <tbody>
-      @for (item of items(); track $index) {
-  <tr class="hover:bg-card/50" app-table-row [item]="item"
-   [isSelected]="isSelected(item.id_proyecto)"
-              (checkboxChange)="onCheckboxChange(item.id_proyecto, $event)"></tr>
+      @for (item2 of items(); track $index) {
+  <tr class="hover:bg-card/50" app-table-row [item2]="item2"
+   [isSelected]="isSelected(item2.id_ingreso)"
+              (checkboxChange)="onCheckboxChange(item2.id_ingreso, $event)"></tr>
 } @empty {
   <tr>
     <td class="py-4 text-center text-sm" colspan="8">No muestras encontradas</td>

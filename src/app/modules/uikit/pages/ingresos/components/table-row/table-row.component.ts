@@ -96,7 +96,7 @@ export class TableRowComponent implements OnInit {
       }
     });
   }
-  
+
   editarMuestreo(id: number) {
     this.router.navigate(['/components/muestreo_pesca', id]);
   }

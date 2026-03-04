@@ -6,6 +6,8 @@ import { MuestreoPescaComponent } from './pages/muestreo_pesca/muestreo_pesca.co
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { ProyectoComponent } from './pages/proyectos/proyecto.component';
 import { ModelProyectoComponent } from './pages/proyectos/components/modelcreaedita-proyecto/modelcrear-proyecto.component';
+import { IngresosComponent } from './pages/ingresos/ingresos.component';
+import { EgresosComponent } from './pages/egresos/egresos.component';
 
 const routes: Routes = [
   {
@@ -19,6 +21,8 @@ const routes: Routes = [
         { path: 'muestreo_pesca/:id', component: MuestreoPescaComponent },
         { path:'proyectos/:id',   component:ProyectoComponent},
          { path: 'modelcrearproyecto', component: ModelProyectoComponent },
+         {path: 'ingresos',component:IngresosComponent},
+         {path: 'egresos',component:EgresosComponent},
         { path: 'muestreo_pesca/:id/ver', component: MuestreoPescaComponent }, 
       { path: '**', redirectTo: 'errors/404' },
     ],

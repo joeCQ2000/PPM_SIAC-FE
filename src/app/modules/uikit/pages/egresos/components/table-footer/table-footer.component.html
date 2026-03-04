@@ -1,0 +1,53 @@
+<div class="text-muted-foreground flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs">
+  <!-- Selector de tamaño de página -->
+  <div class="order-2 flex items-center gap-2 md:order-1">
+    Mostrar
+    <select class="w-16 p-2" [value]="tamanioPagina" (change)="onTamanioChange($event)">
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+      <option value="50">50</option>
+    </select>
+    por página
+  </div>
+
+  <!-- Paginación -->
+  <div class="order-1 flex items-center gap-4 md:order-2">
+    <span>{{ inicio }}–{{ fin }} de {{ totalRegistros }}</span>
+
+    <div class="inline-flex items-center gap-1">
+      <!-- Flecha izquierda -->
+      <button
+        class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
+        (click)="irPaginaAnterior()"
+        [disabled]="paginaActual <= 1">
+        <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+      </button>
+
+      <!-- Botones de páginas -->
+      <ng-container *ngFor="let num of paginasVisibles">
+            <button
+            type="button"
+        (click)="irPagina(num)"
+        [ngClass]="{
+          'bg-muted-foreground/10 text-primary': num === paginaActual,
+          'hover:bg-muted-foreground/10': num !== paginaActual
+        }"
+        class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm transition">
+        {{ num }}
+      </button>
+      </ng-container>
+
+      <span *ngIf="paginasVisibles[paginasVisibles.length - 1] < totalPaginas">...</span>
+
+      <!-- Flecha derecha -->
+      <button
+        class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
+        (click)="irPaginaSiguiente()"
+        [disabled]="paginaActual >= totalPaginas">
+        <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+      </button>
+    </div>
+  </div>
+</div>

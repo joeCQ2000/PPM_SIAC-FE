@@ -1,0 +1,64 @@
+<ng-container>
+  
+  <!-- Información principal CON checkbox -->
+  <th>
+    <div class="flex items-center gap-2.5">
+      <!-- Checkbox -->
+     <th class="py-3 px-4 text-left w-12">
+    <input 
+      type="checkbox" 
+      [checked]="isSelected"
+      (change)="onCheckboxClick($event)"
+      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded 
+             focus:ring-blue-500 focus:ring-2 cursor-pointer">
+  </th>
+      
+      <!-- Avatar -->
+      <!-- <img
+        alt="muestreo icon"
+        class="h-9 w-9 shrink-0 rounded-full"
+        src="https://ui-avatars.com/api/?name={{ item.id_proyecto }}&background=random" />
+       -->
+      <!-- Textos -->
+      <div class="flex flex-col items-start">
+        <span class="text-foreground hover:text-primary text-sm font-semibold">
+          {{ item.per}}
+        </span>
+      </div>
+    </div>
+  </th>
+
+  <td>{{ item.fecha_registro | date: 'dd/MM/yyyy' }}</td>
+
+  <td>
+    <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800">
+      {{ item.nro_contrato }}
+    </span>
+  </td>
+
+  <td>{{ item.responsable }}</td>
+
+  <td>
+    <span class="text-xs text-gray-400">
+      {{ item.servicio }}
+    </span>
+  </td>
+
+  <td class="text-center">
+    <div class="flex items-center justify-center gap-2">
+
+      <!-- Ver detalle -->
+      <button
+        class="hover:bg-card text-red-500 hover:text-primary flex h-8 w-8 items-center justify-center rounded-md transition"
+        title="Ver Detalle"
+        (click)="verDetalle(item.id_proyecto)"
+      >
+        <svg-icon
+          src="./assets/icons/heroicons/outline/eye.svg"
+          [svgClass]="'h-5 w-5 text-foreground'"
+        ></svg-icon>
+      </button>
+    </div>
+  </td>
+
+</ng-container>

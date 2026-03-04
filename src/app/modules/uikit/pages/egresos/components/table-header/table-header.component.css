@@ -1,0 +1,11 @@
+@reference "../../../../../../../styles.css";
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  width: auto;
+}
+.table {
+  width: 100%;
+  table-layout: auto; /* Esto asegura que la tabla ajuste las celdas dinámicamente */
+}

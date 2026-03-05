@@ -161,12 +161,12 @@ onFiltersChanged() {
       text: `Se eliminarán ${ids.length} proyecto(s)`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#dc2626',
+      confirmButtonColor: '#3758F9',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
-      background: '#1E293B',
-      color: '#ffff'
+      background: '#ffff',
+      color: '#282828'
     }).then((result) => {
       if (result.isConfirmed) {
         this.ejecutarEliminacion(ids);

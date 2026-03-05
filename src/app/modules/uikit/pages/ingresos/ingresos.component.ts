@@ -163,12 +163,12 @@ onFiltersChanged() {
       text: `Se eliminarán ${ids.length} ingreso(s)`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#dc2626',
+      confirmButtonColor: '#3758F9',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
-      background: '#1E293B',
-      color: '#ffff'
+      background: '#ffff',
+      color: '#282828'
     }).then((result) => {
       if (result.isConfirmed) {
         this.ejecutarEliminacion(ids);
@@ -203,7 +203,7 @@ private finalizarEliminacion(exitosos: number, fallidos: number): void {
     if (fallidos === 0) {
       Swal.fire({
         icon: 'success',
-        title: `${exitosos} proyecto(s) eliminado(s)`,
+        title: `${exitosos} ingreso(s) eliminado(s)`,
         toast: true,
         position: 'top-end',
         showConfirmButton: false,

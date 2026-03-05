@@ -47,35 +47,40 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <!--Contrato  -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Nro de Contrato</label>
-        <input type="text" formControlName="valor_venta" 
-               placeholder="Escribe el Nro de Contrato"
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-      <!--Valor de Venta-->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Valor Venta</label>
-         <input type="text" formControlName="valor_venta" 
-               placeholder="Nombre del Centro Costo"
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-      </div>
-       <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-          <select 
-            formControlName="estado" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg 
-                  focus:ring-2 focus:ring-gray-500 focus:border-gray-500 
-                  bg-white text-gray-900 cursor-pointer">
-            <option [value]="true"> Activo</option>
-            <option [value]="false">Inactivo</option>
-          </select>
-        </div>
-        </div>
+   <div class="grid grid-cols-2 gap-4">
+  <!-- Nombre del Proyecto -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Proyecto</label>
+    <input type="number" formControlName="id_proyecto" 
+           placeholder="Nombre del Centro Costo"
+           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+  </div>
+
+  <!-- Fila con Switch y Valor Venta -->
+  <div class="grid grid-cols-2 gap-4">
+    <!-- Afecta impuestos (Switch) -->
+    <div>
+<div>
+  <label class="block text-sm font-medium text-gray-700 mb-1">Afecta impuestos?</label>
+  <div class="flex items-center gap-3 px-3 py-2 h-[42px]">
+    <label class="relative inline-flex items-center cursor-pointer">
+      <input type="checkbox" formControlName="afect_impuestos" class="sr-only peer" />
+      <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 transition-colors"></div>
+      <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+    </label>
+  </div>
+</div>
+</div>
+
+    <!-- Valor Venta -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Valor Venta</label>
+      <input type="text" formControlName="valor_venta" 
+             placeholder="Valor de venta"
+             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
     </div>
+  </div>
+</div>
     <div class="grid grid-cols-2 gap-4">
       <!--F.Emision-->  
       <div>
@@ -102,18 +107,29 @@
 
     <div class="grid grid-cols-2 gap-4 py-3 items-center mb-3 border-b  border-[#1A1A1A]/70">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
-        <input type="number" formControlName="id_cliente" 
+        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Vencimiento</label>
+        <input type="date" formControlName="fecha_vencimiento" 
                placeholder="Indique el nombre del cliente"
                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
       </div>
       <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Descripción (Opcional)</label>
-      <input  type="text" formControlName ="descripcion"
+      <label class="block text-sm font-medium text-gray-700 mb-1">Observacion (Opcional)</label>
+      <input  type="text" formControlName ="observacion"
                 placeholder="Escribe la descripción del proyecto"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
       </div>
     </div>
+     <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+          <select 
+            formControlName="estado" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg 
+                  focus:ring-2 focus:ring-gray-500 focus:border-gray-500 
+                  bg-white text-gray-900 cursor-pointer">
+            <option [value]="true"> Activo</option>
+            <option [value]="false">Inactivo</option>
+          </select>
+        </div>
     <div class="flex justify-end gap-3 pt-4">
       <button type="button" (click)="cerrar()" 
               class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">

@@ -61,7 +61,7 @@ export class ModelIngresoComponent implements OnDestroy {
       id_proyecto : ['', Validators.required],
       tipo_documento: ['', Validators.required],
       afect_impuestos: [false],
-      tasa_cambio: ['', Validators.required],
+      tasa_cambio: [''],
       moneda: [''],
       valor_venta: [''],
       fecha_emision: [''],

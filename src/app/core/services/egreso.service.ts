@@ -13,16 +13,16 @@ export class EgresoService{
     private url = `${base_url}api/Egresos`
     constructor(private httpClient: HttpClient) { }
     Registrar(egreso: egreso): Observable<egreso> {
-        return this.httpClient.post<egreso>(`${this.url}/RegistrarEgreso`, egreso);
+        return this.httpClient.post<egreso>(`${this.url}/RegistrarEgresos`, egreso);
         }
     Listar(): Observable<egreso[]>{
         return this.httpClient.get<egreso[]>(`${this.url}/ListarEgresos`,);
         }
-    Actualizar(egreso : egreso,id_egreso: number){
-        return this.httpClient.put<egreso[]>(`${this.url}/EditarEgresos/${id_egreso}`, egreso );
+    Actualizar(id_egreso: number){
+        return this.httpClient.put<egreso[]>(`${this.url}/EditarEgresos/${id_egreso}`,id_egreso );
         }
-    Eliminar (id_egreso: number, egreso: egreso): Observable<egreso> {
-        return this.httpClient.delete<egreso>(`${this.url}/EliminarEgresoso/${id_egreso}`,{body: egreso});
+    Eliminar (id_egreso: number): Observable<egreso> {
+        return this.httpClient.delete<egreso>(`${this.url}/EliminarEgresoso/${id_egreso}` );
         }
 }
 

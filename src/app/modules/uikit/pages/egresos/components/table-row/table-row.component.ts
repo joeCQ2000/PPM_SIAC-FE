@@ -8,9 +8,9 @@ import { EspecieService } from 'src/app/core/services/especie';
 import { PdfPreviewDialogComponent } from '../pdf-preview/pdf-preview-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TablaListadoDeMuestreoDTO } from 'src/app/core/models/TablaListadoDeMuestreoDTO';
-
-import { ModelProyectoComponent } from '../modelcreaedita-proyecto/modelcrear-proyecto.component';
 import { Proyecto } from 'src/app/core/models/proyecto.model';
+import { egreso } from 'src/app/core/models/egreso.model';
+import { ModelEgresoComponent } from '../modelcreaedita-egreso/modelcreaedita-egreso.component';
 
 @Component({
   selector: '[app-table-row]',
@@ -20,7 +20,7 @@ import { Proyecto } from 'src/app/core/models/proyecto.model';
   styleUrl: './table-row.component.css',
 })
 export class TableRowComponent implements OnInit {
-  @Input() item!: Proyecto;
+  @Input() item!: egreso;
   @Input() isSelected: boolean = false; 
   @Output() checkboxChange = new EventEmitter<boolean>(); 
 
@@ -80,7 +80,7 @@ export class TableRowComponent implements OnInit {
     return Number.isFinite(n) && this.finalizados.has(n);
   }
  abrirModalNuevo() {
-    const dialogRef = this.dialog.open(ModelProyectoComponent, {
+    const dialogRef = this.dialog.open(ModelEgresoComponent, {
       width: '700px',
       maxWidth: '90vw',
       disableClose: false,

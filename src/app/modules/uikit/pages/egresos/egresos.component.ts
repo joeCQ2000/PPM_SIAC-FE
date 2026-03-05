@@ -16,6 +16,8 @@ import { PaginadoDTO } from 'src/app/core/models/PaginadoDTO';
 import { Proyecto } from 'src/app/core/models/proyecto.model';
 import Swal from 'sweetalert2';
 import { ProyectoService } from 'src/app/core/services/proyecto.service';
+import { egreso } from 'src/app/core/models/egreso.model';
+import { EgresoService } from 'src/app/core/services/egreso.service';
 
 @Component({
   selector: 'app-table',
@@ -26,7 +28,7 @@ import { ProyectoService } from 'src/app/core/services/proyecto.service';
 })
 export class EgresosComponent implements OnInit {
   private readonly url = environment.base;
-  items = signal<Proyecto[]>([]);
+  items = signal<egreso[]>([]);
   totalRegistros = signal(0);
 
   paginas = signal(1);
@@ -53,7 +55,7 @@ export class EgresosComponent implements OnInit {
     private http: HttpClient,
     private filterService: TableFilterService,
     private router: Router,
-    private proyectoservice : ProyectoService    
+    private egresoService : EgresoService    
   ) {}
 
   ngOnInit() {
@@ -76,7 +78,7 @@ export class EgresosComponent implements OnInit {
   }
 
   cargarPagina(page: number) {
-  const endpoint = `${this.url}api/Proyecto/ListarProyectosPaginado`;
+  const endpoint = `${this.url}api/Egresos/ListarEgresos`;
 
   let params = new HttpParams()
     .set('page', String(page))
@@ -176,8 +178,8 @@ onFiltersChanged() {
     let completados = 0;
     let errores = 0;
 
-    ids.forEach(id_proyecto => {
-      this.proyectoservice.Eliminar(id_proyecto).subscribe({
+    ids.forEach(id_egreso => {
+      this.egresoService.Eliminar(id_egreso).subscribe({
         next: () => {
           completados++;
           if (completados + errores === ids.length) {

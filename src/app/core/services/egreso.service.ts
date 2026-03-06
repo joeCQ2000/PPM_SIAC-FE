@@ -22,7 +22,7 @@ export class EgresoService{
         return this.httpClient.put<egreso[]>(`${this.url}/EditarEgresos/${id_egreso}`,id_egreso );
         }
     Eliminar (id_egreso: number): Observable<egreso> {
-        return this.httpClient.delete<egreso>(`${this.url}/EliminarEgresoso/${id_egreso}` );
+        return this.httpClient.delete<egreso>(`${this.url}/EliminarEgreso/${id_egreso}` );
         }
 }
 

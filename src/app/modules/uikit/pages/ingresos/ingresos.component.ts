@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, EventEmitter, Input, OnInit, Output, signal, SimpleChanges } from '@angular/core';
 import { toast } from 'ngx-sonner';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -12,12 +12,12 @@ import { TableFooterComponent } from './components/table-footer/table-footer.com
 import { TableRowComponent } from './components/table-row/table-row.component';
 import { TableActionComponent } from './components/table-action/table-action.component';
 import { CommonModule } from '@angular/common';
-import { PaginadoDTO } from 'src/app/core/models/PaginadoDTO';
-import { Proyecto } from 'src/app/core/models/proyecto.model';
 import Swal from 'sweetalert2';
-import { ProyectoService } from 'src/app/core/services/proyecto.service';
 import { ingreso } from 'src/app/core/models/ingreso.model';
 import { IngresoService } from 'src/app/core/services/ingreso.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { ModelIngresoComponent } from './components/modelcreaedita-ingreso/modelcreaedita-ingreso.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-table',
@@ -28,7 +28,8 @@ import { IngresoService } from 'src/app/core/services/ingreso.service';
 })
 export class IngresosComponent implements OnInit {
   private readonly url = environment.base; // asegúrate que tenga / al final o ajusta abajo
-
+@Input() idProyecto?: number;
+ @Input() ingresos: ingreso[] = [];
   items = signal<ingreso[]>([]);
   totalRegistros = signal(0);
 
@@ -56,11 +57,23 @@ export class IngresosComponent implements OnInit {
     private http: HttpClient,
     private filterService: TableFilterService,
     private router: Router,
+    private dialog : MatDialog,
     private ingresoservice : IngresoService    
   ) {}
 
   ngOnInit() {
-    this.cargarPagina(1);
+    console.log('🔍 Inicialización del componente');
+    console.log('ID Proyecto:', this.idProyecto);
+    console.log('Ingresos recibidos:', this.ingresos.length);
+    
+    // Solo carga si no vienen datos del padre
+    if (this.ingresos.length === 0 && !this.idProyecto) {
+      console.log('⚠️ Modo listado general');
+      this.cargarPagina(1);
+    } else {
+      console.log('✅ Modo detalle de proyecto');
+      this.actualizarDatosDelPadre();
+    }
   }
   toggleSelectAll(checked: boolean): void {
     
@@ -146,6 +159,24 @@ onFiltersChanged() {
   isSelected(id: number): boolean {
     return this.selectedIds().includes(id);
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['ingresos'] && !changes['ingresos'].firstChange) {
+      console.log('🔄 Ingresos actualizados desde el padre');
+      console.log('Cantidad:', changes['ingresos'].currentValue.length);
+      this.actualizarDatosDelPadre();
+    }
+  }
+    private actualizarDatosDelPadre(): void {
+    this.items.set(this.ingresos);
+    this.totalRegistros.set(this.ingresos.length);
+    this.paginas.set(1);
+    this.selectedIds.set([]);
+    
+    console.log('📊 Datos actualizados:');
+    console.log('- Items:', this.items().length);
+    console.log('- Total:', this.totalRegistros());
+  }
+
 
   eliminarSeleccionados(): void {
     const ids = this.selectedIds();
@@ -236,4 +267,38 @@ private finalizarEliminacion(exitosos: number, fallidos: number): void {
   goToRegistro(): void {
     this.router.navigate(['/components/muestreo_pesca']);
   }
+  abrirModalCrearIngreso(): void {
+    if (!this.idProyecto) {
+      toast.error('No se pudo identificar el proyecto', {
+        position: 'bottom-right'
+      });
+      return;
+    }
+
+    console.log('📥 Abriendo modal de ingreso para proyecto:', this.idProyecto);
+
+    const dialogRef = this.dialog.open(ModelIngresoComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      data: {
+        modo: 'crear',
+        idProyecto: this.idProyecto // 🔥 PASA EL ID DEL PROYECTO
+      },
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.accion === 'crear') {
+        toast.success('Ingreso registrado correctamente', {
+          position: 'bottom-right'
+        });
+        
+        // 🔥 RECARGA LOS DATOS DEL PROYECTO PADRE
+        this.recargarProyecto.emit();
+      }
+    });
+  }
+
+  // 🔥 AÑADE UN OUTPUT PARA NOTIFICAR AL PADRE
+  @Output() recargarProyecto = new EventEmitter<void>();
 }

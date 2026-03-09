@@ -160,7 +160,10 @@ export class ModelProyectoComponent implements OnDestroy {
 
   private actualizarProyecto(proyectoData: any): void {
     // Agregar el ID al objeto de datos
-    const dataConId = { ...proyectoData, id: this.proyectoId };
+    const dataConId = { 
+    ...proyectoData, 
+    id_proyecto: this.proyectoId // 🔥 CORRECTO - Coincide con el backend
+  };
 
     this.proyectoservice.Actualizar(this.proyectoId!, dataConId)
       .pipe(takeUntil(this.destroy$))

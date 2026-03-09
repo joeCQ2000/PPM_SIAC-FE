@@ -1,5 +1,5 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,238 +10,209 @@ import { ProyectoService } from 'src/app/core/services/proyecto.service';
 import Swal from 'sweetalert2';
 import { Proyecto } from 'src/app/core/models/proyecto.model';
 import { Subject, takeUntil } from 'rxjs';
-import { Router } from '@angular/router';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { IngresosComponent } from "../../../ingresos/ingresos.component";
+import { EgresosComponent } from "../../../egresos/egresos.component";
+import { BuscarPorIdProyecto } from '../../../egresos/services/ProyectoPorIdDTO';
+import { toast } from 'ngx-sonner';
+import { ModelProyectoComponent } from '../modelcreaedita-proyecto/modelcrear-proyecto.component';
+import { AngularSvgIconModule } from "angular-svg-icon";
+import { ingreso } from 'src/app/core/models/ingreso.model';
+import { egreso } from 'src/app/core/models/egreso.model';
 @Component({
-  selector: 'app-modal-proyecto',
+  selector: 'app-detalle-proyecto',
   templateUrl: './modelcrear-proyecto.component.html',
+  styleUrl: './modelcrear-proyecto.component.css',
   standalone: true,
   imports: [
-    CommonModule,          
+    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     MatDialogModule,
     MatFormFieldModule,
+    AngularSvgIconModule,
     MatInputModule,
     MatSelectModule,
-    MatButtonModule     
-  ]
+    MatButtonModule,
+    IngresosComponent,
+    EgresosComponent
+]
 })
-export class ModelProyectoComponent implements OnDestroy {
-  proyectoForm: FormGroup;
-  submitted = false;
-  proyecto: Proyecto[] = [];
+export class DetalleProyectoComponent implements OnInit {
   
-  // Propiedades para controlar el modo
-  modoEdicion: boolean = false;
-  tituloModal: string = 'Crear Proyecto';
-  proyectoId?: number;
+proyecto: BuscarPorIdProyecto | null = null;
+  idProyecto: number = 0;
+  ingresos: ingreso[] = [];
+  egresos: egreso[] = [];
+  
+  
+  tabActiva: string = 'ingreso';
+  
+  cargando: boolean = false;
+  error: string = '';
 
-  private destroy$ = new Subject<void>();
+  filtros = {
+    tipo: '',
+    estado: '',
+    fechaDesde: '',
+    fechaHasta: ''
+  };
 
   constructor(
-    public dialogRef: MatDialogRef<ModelProyectoComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
-    private proyectoservice: ProyectoService,
-    private router: Router
-  ) {
-    // Inicializar formulario
-    this.proyectoForm = this.fb.group({
-      nro_contrato: ['', Validators.required],
-      per: ['', Validators.required],
-      estado: [true],
-      id_cliente: ['', Validators.required],
-      centro_costo: [''],
-      servicio: [''],
-      responsable: [''],
-      fecha_inicio: [''],
-      fecha_registro: [{ value: new Date().toISOString().split('T')[0], disabled: true }],
-      descripcion: ['']
+    private route: ActivatedRoute,
+    private router: Router,
+    private proyectoService: ProyectoService,
+      private dialog: MatDialog,
+  ) {}
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.idProyecto = +params['id'];
+      console.log('ID del proyecto:', this.idProyecto);
+      
+      if (this.idProyecto) {
+        this.cargarProyecto();
+      } else {
+        this.error = 'ID de proyecto no válido';
+      }
     });
-    this.configurarModoEdicion();
   }
 
-  private configurarModoEdicion(): void {
-    if (this.data?.modo === 'editar' && this.data?.proyecto) {
-      this.modoEdicion = true;
-      this.tituloModal = 'Editar Proyecto';
-      this.proyectoId = this.data.proyecto.id;
-
-      this.proyectoForm.patchValue({
-        nro_contrato: this.data.proyecto.nro_contrato,
-        per: this.data.proyecto.per,
-        estado: this.data.proyecto.estado ?? true,
-        id_cliente: this.data.proyecto.id_cliente,
-        centro_costo: this.data.proyecto.centro_costo || '',
-        servicio: this.data.proyecto.servicio || '',
-        responsable: this.data.proyecto.responsable || '',
-        fecha_inicio: this.data.proyecto.fecha_inicio || '',
-        descripcion: this.data.proyecto.descripcion || ''
-      });
-      if (this.data.proyecto.fecha_registro) {
-        this.proyectoForm.patchValue({
-          fecha_registro: this.data.proyecto.fecha_registro
+  cargarProyecto(): void {
+    this.cargando = true;
+    this.error = '';
+    
+    this.proyectoService.BuscarPorId(this.idProyecto).subscribe({
+      next: (response) => {
+        this.proyecto = response;
+        
+        // 🔥 EXTRAE LOS INGRESOS Y EGRESOS
+        this.ingresos = response.ingresos || [];
+        this.egresos = response.egresos || [];
+        
+        this.cargando = false;
+        
+        console.group('✅ Datos Cargados Correctamente');
+        console.log('Proyecto:', this.proyecto);
+        console.log('Ingresos:', this.ingresos.length, 'registros');
+        console.log('Egresos:', this.egresos.length, 'registros');
+        console.table(this.ingresos.slice(0, 10)); // Muestra los primeros 3
+        console.table(this.egresos.slice(0, 10));
+        console.groupEnd();
+      },
+      error: (err) => {
+        this.error = 'Error al cargar el proyecto';
+        this.cargando = false;
+        console.error('❌ Error al cargar proyecto:', err);
+        toast.error('No se pudo cargar el proyecto', {
+          position: 'bottom-right',
+          description: err.error?.mensaje || 'Error desconocido'
         });
       }
-    } else {
-      this.modoEdicion = false;
-      this.tituloModal = 'Crear Proyecto';
-    }
+    });
   }
 
-  registrar(): void {
-    this.submitted = true;
+  cambiarTab(tab: string): void {
+    this.tabActiva = tab;
+  }
 
-    if (this.proyectoForm.invalid) {
-      this.proyectoForm.markAllAsTouched();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  abrirModalEdicion(): void {
+  if (!this.proyecto) {
+    toast.error('No hay proyecto cargado para editar', {
+      position: 'bottom-right'
+    });
+    return;
+  }
 
-      Swal.fire({
-        icon: 'error',
-        title: 'Favor de rellenar los datos faltantes',
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timerProgressBar: true,
-        timer: 2000,
-        background: '#1E293B',
-        color: '#ffff'
+  // 🔥 MAPEA LOS DATOS AL FORMATO QUE ESPERA EL MODAL
+  const proyectoParaEditar = {
+    id: this.proyecto.id,
+    nro_contrato: this.proyecto.nro_Contrato,
+    per: this.proyecto.per,
+    estado: this.proyecto.estado,
+    id_cliente: this.proyecto.idCliente || '', // Asegúrate de tener este campo
+    centro_costo: this.proyecto.centro_Costo,
+    servicio: this.proyecto.servicio,
+    responsable: this.proyecto.responsable,
+    fecha_inicio: this.formatearFechaParaInput(this.proyecto.fecha_Inicio),
+    descripcion: this.proyecto.descripcion
+  };
+
+  const dialogRef = this.dialog.open(ModelProyectoComponent, {
+    width: '800px',
+    maxWidth: '95vw',
+    data: {
+      modo: 'editar', // 🔥 CAMBIA ESTO - El modal espera "modo"
+      proyecto: proyectoParaEditar // 🔥 Pasa el proyecto mapeado
+    },
+    disableClose: false,
+    panelClass: 'custom-dialog-container'
+  });
+
+  // 🔥 Escucha cuando se cierra el modal
+  dialogRef.afterClosed().subscribe(result => {
+    if (result?.accion === 'editar') {
+      toast.success('Proyecto actualizado correctamente', {
+        position: 'bottom-right'
       });
-      return;
+      this.cargarProyecto(); // Recarga los datos actualizados
     }
-    const proyectoData = this.proyectoForm.getRawValue();
+  });
+  
+}
 
-    if (this.modoEdicion && this.proyectoId) {
-      // Modo edición
-      this.actualizarProyecto(proyectoData);
-    } else {
-      // Modo creación
-      this.crearProyecto(proyectoData);
-    }
+// 🔥 MÉTODO AUXILIAR PARA FORMATEAR FECHAS
+private formatearFechaParaInput(fecha: Date | string | null | undefined): string {
+  if (!fecha) return '';
+  
+  const date = typeof fecha === 'string' ? new Date(fecha) : fecha;
+  
+  if (isNaN(date.getTime())) return '';
+  
+  // Formato YYYY-MM-DD para inputs de tipo date
+  return date.toISOString().split('T')[0];
+}
+
+  volver(): void {
+    this.router.navigate(['/components/proyectos']);
   }
 
-  private crearProyecto(proyectoData: any): void {
-    this.proyectoservice.Registrar(proyectoData)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (resp) => {
-          console.log('Registro exitoso', resp);
-          Swal.fire({
-            icon: 'success',
-            title: 'Proyecto registrado correctamente',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timerProgressBar: true,
-            timer: 3000,
-            background: '#1E293B',
-            color: '#ffff'
-          });
-          this.dialogRef.close({ accion: 'crear', data: resp });
-        },
-        error: (err) => {
-          console.error('Error al registrar', err);
-          Swal.fire({
-            icon: 'error',
-            title: 'Ocurrió un error al registrar',
-            text: err?.error?.message || 'Intente nuevamente',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timerProgressBar: true,
-            timer: 5000,
-            background: '#1E293B',
-            color: '#ffff'
-          });
-        }
-      });
+  aplicarFiltros(): void {
+    console.log('Filtros aplicados:', this.filtros);
+    toast.info('Filtros aplicados', { position: 'bottom-right' });
   }
 
-  private actualizarProyecto(proyectoData: any): void {
-    // Agregar el ID al objeto de datos
-    const dataConId = { ...proyectoData, id: this.proyectoId };
-
-    this.proyectoservice.Actualizar(this.proyectoId!, dataConId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (resp) => {
-          console.log('Actualización exitosa', resp);
-          Swal.fire({
-            icon: 'success',
-            title: 'Proyecto actualizado correctamente',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timerProgressBar: true,
-            timer: 3000,
-            background: '#1E293B',
-            color: '#ffff'
-          });
-          this.dialogRef.close({ accion: 'editar', data: resp });
-        },
-        error: (err) => {
-          console.error('Error al actualizar', err);
-          Swal.fire({
-            icon: 'error',
-            title: 'Ocurrió un error al actualizar',
-            text: err?.error?.message || 'Intente nuevamente',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timerProgressBar: true,
-            timer: 5000,
-            background: '#1E293B',
-            color: '#ffff'
-          });
-        }
-      });
+  limpiarFiltros(): void {
+    this.filtros = {
+      tipo: '',
+      estado: '',
+      fechaDesde: '',
+      fechaHasta: ''
+    };
   }
 
-  cerrar(): void {
-    if (this.proyectoForm.dirty) {
-      Swal.fire({
-        title: '¿Descartar cambios?',
-        text: 'Los cambios no guardados se perderán',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#00049E',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, descartar',
-        cancelButtonText: 'Cancelar',
-        background: '#ffff',
-        color: '#5a5a5a'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.dialogRef.close();
-        }
-      });
-    } else {
-      this.dialogRef.close();
-    }
+  getEstadoClass(estado: boolean | number): string {
+    return estado === true || estado === 1 
+      ? 'badge bg-success' 
+      : 'badge bg-secondary';
   }
-
-  guardar(): void {
-    this.registrar();
-  }
-
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  obtenerMensajeError(nombreCampo: string): string {
-    const control = this.proyectoForm.get(nombreCampo);
+  formatearFecha(fecha: Date | string | null | undefined): string {
+    if (!fecha) return '-';
     
-    if (control?.hasError('required')) {
-      return 'Este campo es obligatorio';
-    }
+    const date = typeof fecha === 'string' ? new Date(fecha) : fecha;
     
-    return '';
+    // Verifica si es una fecha válida
+    if (isNaN(date.getTime())) return '-';
+    
+    return date.toLocaleDateString('es-PE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
   }
-  tieneError(nombreCampo: string): boolean {
-    const control = this.proyectoForm.get(nombreCampo);
-    return !!(control?.invalid && (control?.dirty || control?.touched || this.submitted));
+   getEstadoTexto(estado: boolean | number): string {
+    // Convierte 0/1 o false/true a texto
+    return estado === true || estado === 1 ? 'Activo' : 'Inactivo';
   }
+
 }

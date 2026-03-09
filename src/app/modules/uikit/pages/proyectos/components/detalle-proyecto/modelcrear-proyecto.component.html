@@ -1,106 +1,299 @@
-<div class="p-8">
-  <div class="flex justify-between px-2 py-4 items-center mb-6 border-b  border-[#1A1A1A]/70">
-    <h1 class="text-2xl font-semibold text-blue-600 flex items-center gap-2">
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-    {{ tituloModal }}
-    </h1>
-    <button (click)="cerrar()" class="text-gray-400 hover:text-gray-600">
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
+<div class="detalle-proyecto-page">
+  
+  <!-- ========================================== -->
+  <!-- LOADER -->
+  <!-- ========================================== -->
+  <div *ngIf="cargando" class="loading-state">
+    <div class="spinner-border text-primary"></div>
+    <p>Cargando proyecto...</p>
   </div>
 
-  <form [formGroup]="proyectoForm" class="space-y-6">
-    <div class="grid grid-cols-2 gap-4">
-      <!--Per-->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Per</label>
-        <input type="text" formControlName="per" 
-               placeholder="Nombre del Per"
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-      </div>
-      <!--Responsable-->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Responsable</label>
-        <input type="text" formControlName="responsable" 
-               placeholder="Nombre del responsable"
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-      </div>
+  <!-- ========================================== -->
+  <!-- ERROR -->
+  <!-- ========================================== -->
+  <div *ngIf="error && !cargando" class="error-state">
+    <div class="alert alert-danger d-flex align-items-center">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <div class="flex-grow-1">{{ error }}</div>
+      <button class="btn btn-sm btn-outline-danger" (click)="cargarProyecto()">
+        Reintentar
+      </button>
     </div>
+  </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <!--Contrato  -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Nro de Contrato</label>
-        <input type="text" formControlName="nro_contrato" 
-               placeholder="Escribe el Nro de Contrato"
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-      </div>
-      <!--C.Costo-->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Centro de Costo</label>
-         <input type="text" formControlName="centro_costo" 
-               placeholder="Nombre del Centro Costo"
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-      </div>
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-      <div class="grid grid-cols-2 gap-4">
-      <!--F.Inicio-->  
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de inicio</label>
-        <input type="date" formControlName="fecha_inicio" 
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-      </div>
-      <!--Estado-->  
-       <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-          <select 
-            formControlName="estado" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg 
-                  focus:ring-2 focus:ring-gray-500 focus:border-gray-500 
-                  bg-white text-gray-900 cursor-pointer">
-            <option [value]="true"> Activo</option>
-            <option [value]="false">Inactivo</option>
-          </select>
+  <!-- ========================================== -->
+  <!-- CONTENIDO PRINCIPAL -->
+  <!-- ========================================== -->
+  <div *ngIf="!cargando && proyecto" class="proyecto-content">
+    
+    <!-- HEADER: Botón Volver -->
+     <div class="bg-background px-4 sm:px-6 py-3 space-y-3">
+    <p class="text-xs text-muted-foreground">
+      Movimientos/Proyectos
+    </p>
+
+    <h1 class="text-lg sm:text-2xl font-semibold text-foreground">
+      Proyectos
+    </h1>
+  </div>
+    <div class="cards-section">
+      <div class="container-fluid">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          
+          <!-- ========================================== -->
+          <!-- CARD 1: Información del Proyecto -->
+          <!-- ========================================== -->
+            <div class="lg:col-span-2">
+        <div class="info-card">
+              
+              <!-- Header del Card -->
+              <div class="card-header-custom">
+                <div class="header-title-section">
+                  <h4 class="proyecto-titulo">{{ proyecto.per || 'Proyecto' }}</h4>
+                  <span class="proyecto-subtitle">PER: {{ proyecto.id }} - {{ proyecto.nro_Contrato }}</span>
+                </div>
+                <button class="btn-edit" (click)="abrirModalEdicion()" title="Editar proyecto">
+                  <svg-icon src="assets/icons/heroicons/outline/pencil-square.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                </button>
+              </div>
+              
+              <!-- Body del Card: Grid de Información -->
+              <div class="card-body-custom">
+                <div class="info-grid">
+                  
+                  <div class="info-item">
+                    <span class="label">Responsable</span>
+                    <span class="value">{{ proyecto.responsable || '-' }}</span>
+                  </div>
+                  
+                  <div class="info-item">
+                    <span class="label">Nombre de Contrato</span>
+                    <span class="value">{{ proyecto.nro_Contrato || '-' }}</span>
+                  </div>
+                  
+                  <div class="info-item">
+                    <span class="label">Servicio</span>
+                    <span class="value">{{ proyecto.servicio || '-' }}</span>
+                  </div>
+                  
+                  <div class="info-item">
+                    <span class="label">Centro de Costo</span>
+                    <span class="value">{{ proyecto.centro_Costo || '-' }}</span>
+                  </div>
+                  
+                  <div class="info-item">
+                    <span class="label">Estado</span>
+                    <span class="value">
+                      <span [ngClass]="getEstadoClass(proyecto.estado)">
+                        {{ getEstadoTexto(proyecto.estado) }}
+                      </span>
+                    </span>
+                  </div>
+                  
+                  <div class="info-item">
+                    <span class="label">Fecha de inicio</span>
+                    <span class="value">{{ formatearFecha(proyecto.fecha_Inicio) }}</span>
+                  </div>
+                  
+                  <div class="info-item full-width">
+                    <span class="label">Descripción</span>
+                    <span class="value">{{ proyecto.descripcion || 'Sin descripción' }}</span>
+                  </div>
+                  
+                  <div class="info-item full-width">
+                    <span class="label">Cliente</span>
+                    <span class="value">
+                      <i class="bi bi-building"></i>
+                      {{ proyecto.nombreCliente || 'Sin cliente' }}
+                    </span>
+                  </div>
+                  
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          
+          <!-- ========================================== -->
+          <!-- CARD 2: Filtros -->
+          <!-- ========================================== -->
+         <div class="lg:col-span-1">
+        <div class="filtros-card">
+          <div class="card-header-custom">
+                <h5 class="card-title">
+                  <i class="bi bi-funnel"></i>
+                  Filtros
+                </h5>
+              </div>
+              
+              <!-- Body del Card: Formulario de Filtros -->
+              <div class="card-body-custom">
+                <form class="filtros-form">
+                  
+                  <!-- Filtro: Tipo -->
+                  <div class="form-group">
+                    <label for="filtroTipo" class="form-label">
+                      <i class="bi bi-tag"></i>
+                      Tipo
+                    </label>
+                    <select 
+                      id="filtroTipo" 
+                      class="form-select" 
+                      [(ngModel)]="filtros.tipo"
+                      name="tipo">
+                      <option value="">Todos</option>
+                      <option value="ingreso">Ingreso</option>
+                      <option value="egreso">Egreso</option>
+                    </select>
+                  </div>
+                  
+                  <!-- Filtro: Estado -->
+                  <div class="form-group">
+                    <label for="filtroEstado" class="form-label">
+                      <i class="bi bi-check-circle"></i>
+                      Estado
+                    </label>
+                    <select 
+                      id="filtroEstado" 
+                      class="form-select" 
+                      [(ngModel)]="filtros.estado"
+                      name="estado">
+                      <option value="">Todos</option>
+                      <option value="activo">Activo</option>
+                      <option value="inactivo">Inactivo</option>
+                      <option value="pendiente">Pendiente</option>
+                    </select>
+                  </div>
+                  
+                  <!-- Filtro: Fecha Desde -->
+                  <div class="form-group">
+                    <label for="filtroFechaDesde" class="form-label">
+                      <i class="bi bi-calendar"></i>
+                      Fecha Desde
+                    </label>
+                    <input 
+                      type="date" 
+                      id="filtroFechaDesde" 
+                      class="form-control" 
+                      [(ngModel)]="filtros.fechaDesde"
+                      name="fechaDesde">
+                  </div>
+                  
+                  <!-- Filtro: Fecha Hasta -->
+                  <div class="form-group">
+                    <label for="filtroFechaHasta" class="form-label">
+                      <i class="bi bi-calendar-check"></i>
+                      Fecha Hasta
+                    </label>
+                    <input 
+                      type="date" 
+                      id="filtroFechaHasta" 
+                      class="form-control" 
+                      [(ngModel)]="filtros.fechaHasta"
+                      name="fechaHasta">
+                  </div>
+                  
+                  <!-- Botones de Acción -->
+                  <div class="filtros-actions">
+                    <button 
+                      type="button" 
+                      class="btn-aplicar" 
+                      (click)="aplicarFiltros()">
+                      <i class="bi bi-check-lg"></i>
+                      Aplicar
+                    </button>
+                    <button 
+                      type="button" 
+                      class="btn-limpiar" 
+                      (click)="limpiarFiltros()">
+                      <i class="bi bi-x-lg"></i>
+                      Limpiar
+                    </button>
+                  </div>
+                  
+                </form>
+              </div>
+              
+            </div>
+          </div>
+          
         </div>
-    </div>
-    <!--Servicio-->  
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Servicio</label>
-         <input type="text" formControlName="servicio" 
-               placeholder="Indique el servicio"
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
       </div>
     </div>
+    
+    <!-- ========================================== -->
+    <!-- TABS HORIZONTALES -->
+    <!-- ========================================== -->
+    <div class="tabs-section">
+      <div class="container-fluid">
+        <ul class="tabs-horizontal">
+          <li 
+            class="tab-item" 
+            [class.active]="tabActiva === 'ingreso'"
+            (click)="cambiarTab('ingreso')">
+            <i class="bi bi-arrow-down-circle"></i>
+            <span>Ingreso</span>
+          </li>
+          <li 
+            class="tab-item" 
+            [class.active]="tabActiva === 'egreso'"
+            (click)="cambiarTab('egreso')">
+            <i class="bi bi-arrow-up-circle"></i>
+            <span>Egreso</span>
+          </li>
+          <li 
+            class="tab-item" 
+            [class.active]="tabActiva === 'resumen'"
+            (click)="cambiarTab('resumen')">
+            <i class="bi bi-bar-chart"></i>
+            <span>Resumen</span>
+          </li>
+          <li 
+            class="tab-item" 
+            [class.active]="tabActiva === 'notas'"
+            (click)="cambiarTab('notas')">
+            <i class="bi bi-journal-text"></i>
+            <span>Notas</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
 
-    <div class="grid grid-cols-2 gap-4 py-3 items-center mb-3 border-b  border-[#1A1A1A]/70">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
-        <input type="number" formControlName="id_cliente" 
-               placeholder="Indique el nombre del cliente"
-               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Descripción (Opcional)</label>
-      <input  type="text" formControlName ="descripcion"
-                placeholder="Escribe la descripción del proyecto"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+    <div class="tab-content-section">
+      <div class="container-fluid">
+        
+       <!-- Tab: Ingresos -->
+        <div *ngIf="tabActiva === 'ingreso'" class="tab-pane">
+    
+          <app-table [ingresos]="ingresos" [idProyecto] ="idProyecto"></app-table>
+        </div>
+        
+        <!-- Tab: Egresos -->
+        <div *ngIf="tabActiva === 'egreso'" class="tab-pane">
+          
+          <app-egresos [egresos]="egresos" [idProyecto]="idProyecto"></app-egresos>
+        </div>
+        
+        <!-- Tab: Ratios -->
+        <div *ngIf="tabActiva === 'Ratios'" class="tab-pane">
+          <div class="empty-state">
+            <i class="bi bi-bar-chart"></i>
+            <p>Ratios</p>
+          </div>
+        </div>
+        
+        <!-- Tab: Resumen -->
+        <div *ngIf="tabActiva === 'Resumen'" class="tab-pane">
+          <div class="empty-state">
+            <i class="bi bi-journal-text"></i>
+            <p>Sección de Resumen</p>
+          </div>
+        </div>
+        
       </div>
     </div>
-    <div class="flex justify-end gap-3 pt-4">
-      <button type="button" (click)="cerrar()" 
-              class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-        Cancelar
-      </button>
-      <button type="button" (click)="registrar()" 
-              [disabled]="!proyectoForm.valid"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300">
-        Registrar
-      </button>
-    </div>
-  </form>
+    
+  </div>
+  
 </div>

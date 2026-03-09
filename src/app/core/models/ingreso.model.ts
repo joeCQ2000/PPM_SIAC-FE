@@ -14,4 +14,5 @@ export interface ingreso{
     fecha_emision: Date,
     fecha_vencimiento: Date,
     estado: boolean,
+    linea : string,
 }

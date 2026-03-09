@@ -101,8 +101,8 @@ export class TableRowComponent implements OnInit {
     this.router.navigate(['/components/muestreo_pesca', id]);
   }
 
-  verDetalle(id: number): void {
-    this.router.navigate(['/components/proyectos', id]);
+  verDetalle(idProyecto: number): void {
+    this.router.navigate(['/components/proyectos/Detalle', idProyecto]);
   }
   Eliminar(): void{
     this.router.navigate(['/components/muestreo_pesca']);

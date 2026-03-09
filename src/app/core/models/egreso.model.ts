@@ -9,6 +9,7 @@ export interface egreso{
     estado: boolean,
     numero: string,
     recurso: string,
+    tasa_cambio : string,
     moneda: string,
     observacion:string,
 }

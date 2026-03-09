@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, Input, OnInit, signal, SimpleChanges } from '@angular/core';
 import { toast } from 'ngx-sonner';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -20,15 +20,18 @@ import { egreso } from 'src/app/core/models/egreso.model';
 import { EgresoService } from 'src/app/core/services/egreso.service';
 
 @Component({
-  selector: 'app-table',
+  selector: 'app-egresos',
   standalone: true,
   imports: [ AngularSvgIconModule, FormsModule, TableHeaderComponent, TableFooterComponent, TableRowComponent, TableActionComponent, CommonModule ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css',
 })
 export class EgresosComponent implements OnInit {
+   @Input() egresos: egreso[] = [];
+
   private readonly url = environment.base;
   items = signal<egreso[]>([]);
+  @Input() idProyecto?:number;
   totalRegistros = signal(0);
 
   paginas = signal(1);
@@ -59,7 +62,18 @@ export class EgresosComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.cargarPagina(1);
+     console.log('🔍 Inicialización del componente');
+    console.log('ID Proyecto:', this.idProyecto);
+    console.log('Ingresos recibidos:', this.egresos.length);
+    
+    // Solo carga si no vienen datos del padre
+    if (this.egresos.length === 0 && !this.idProyecto) {
+      console.log('⚠️ Modo listado general');
+      this.cargarPagina(1);
+    } else {
+      console.log('✅ Modo detalle de proyecto');
+      this.actualizarDatosDelPadre();
+    }
   }
   toggleSelectAll(checked: boolean): void {
     
@@ -72,6 +86,24 @@ export class EgresosComponent implements OnInit {
       this.selectedIds.set([]);
     }
   }
+   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['egresos'] && !changes['egresos'].firstChange) {
+      console.log('🔄 Ingresos actualizados desde el padre');
+      console.log('Cantidad:', changes['egresos'].currentValue.length);
+      this.actualizarDatosDelPadre();
+    }
+  }
+    private actualizarDatosDelPadre(): void {
+    this.items.set(this.egresos);
+    this.totalRegistros.set(this.egresos.length);
+    this.paginas.set(1);
+    this.selectedIds.set([]);
+    
+    console.log('📊 Datos actualizados:');
+    console.log('- Items:', this.items().length);
+    console.log('- Total:', this.totalRegistros());
+  }
+
   onProyectoRegistrado(proyecto: any) {
     console.log('Recargando tabla después del registro:', proyecto);
     this.cargarPagina(1);

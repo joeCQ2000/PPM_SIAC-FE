@@ -4,6 +4,7 @@ import { environment } from "src/environments/environment";
 import { Proyecto } from "../models/proyecto.model";
 import { Observable } from "rxjs";
 import { PaginadoDTO } from "../models/PaginadoDTO";
+import { BuscarPorIdProyecto } from "src/app/modules/uikit/pages/egresos/services/ProyectoPorIdDTO";
 
 const base_url = environment.base;
 @Injectable({
@@ -27,4 +28,7 @@ Actualizar(id_proyecto: number , proyecto : Proyecto){
 Eliminar (id_proyecto: number): Observable<Proyecto> {
     return this.httpClient.delete<Proyecto>(`${this.url}/EliminarProyecto/${id_proyecto}`);
     }
+BuscarPorId(id_proyecto:number) {
+  return this.httpClient.get<BuscarPorIdProyecto>(`${this.url}/BuscarProyectoPorId/${id_proyecto}`)
+}
 }

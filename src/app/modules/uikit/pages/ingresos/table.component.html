@@ -36,6 +36,7 @@
   </table>
 </div>
   <app-table-footer
+   *ngIf="!idProyecto"
  [paginaActual]="paginas()"
   [totalPaginas]="totalpaginas()"
   [totalRegistros]="totalRegistros()"
@@ -43,4 +44,8 @@
   (cambiarPagina)="onCambiarPagina($event)"
   (cambiarTamanio)="onCambiarTamanio($event)">
 </app-table-footer>
+<div *ngIf="items().length === 0" class="empty-state">
+  <i class="bi bi-inbox"></i>
+  <p>No hay ingresos registrados para este proyecto</p>
+</div>
 </div>

@@ -16,6 +16,8 @@ import { PaginadoDTO } from 'src/app/core/models/PaginadoDTO';
 import { Proyecto } from 'src/app/core/models/proyecto.model';
 import Swal from 'sweetalert2';
 import { ProyectoService } from 'src/app/core/services/proyecto.service';
+import { IngresosComponent } from '../ingresos/ingresos.component';
+import { EgresosComponent } from '../egresos/egresos.component';
 
 @Component({
   selector: 'app-table',

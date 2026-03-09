@@ -38,7 +38,16 @@ export class ModelEgresoComponent implements OnDestroy {
   modoEdicion: boolean = false;
   tituloModal: string = 'Crear Proyecto';
   egresoId?: number;
+  tipoMoneda =[
+    {valor:'SOLES',etiqueta:'SOLES'},
+    {valor:'DOLARES',etiqueta:'DOLARES'}
 
+  ]
+   tiposDocumento = [
+    { valor: 'PROVISION', etiqueta: 'PROVISIÓN' },
+    { valor: 'RECIBO POR HONORARIOS', etiqueta: 'RECIBO POR HONORARIOS' },
+    { valor: 'DEUDA', etiqueta: 'DEUDA' }
+  ];
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -55,9 +64,10 @@ export class ModelEgresoComponent implements OnDestroy {
       valor_venta: [''],
       linea: [''],
       fecha_emision: [''],
-      fecha_vencimiento: [''],
+      fecha_vencimiento: [null],
       numero :[''],
       recurso:[''],
+      tasa_cambio:[''],
       moneda:[''],
       //fecha_registro: [{ value: new Date().toISOString().split('T')[0], disabled: true }],
       observacion: [''],

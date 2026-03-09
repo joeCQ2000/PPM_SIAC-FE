@@ -56,18 +56,18 @@ export class ModelIngresoComponent implements OnDestroy {
     private ingresoservice: IngresoService,
     private router: Router
   ) {
-    // Inicializar formulario
     this.ingresoForm = this.fb.group({
       id_proyecto : ['', Validators.required],
       tipo_documento: ['', Validators.required],
       afect_impuestos: [false],
       tasa_cambio: [''],
-      moneda: [''],
+      moneda: ['', Validators.required],
       valor_venta: [''],
-      fecha_emision: [''],
+      fecha_emision: ['', Validators.required],
       fecha_vencimiento: [''],
-      impuesto:[''],
+      impuesto:[0],
       total_documento: [''],
+      linea: ['', Validators.required],
       //fecha_registro: [{ value: new Date().toISOString().split('T')[0], disabled: true }],
       observacion: [''],
       estado:[true]

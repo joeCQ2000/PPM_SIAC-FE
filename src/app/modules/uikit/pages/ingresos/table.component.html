@@ -12,7 +12,10 @@
   <app-table-action (filtersChanged)="onFiltersChanged()"
    [selectedCount]="selectedCount()"
   (eliminarClick)="eliminarSeleccionados()"
-  (proyectoRegistrado)="onProyectoRegistrado($event)"></app-table-action>
+  [idProyecto]="idProyecto"
+   (eliminarClick)="eliminarSeleccionados()"
+  (crearIngresoClick)="abrirModalCrearIngreso()"
+  (proyectoRegistrado)="onIngresoRegistradoGeneral($event)"></app-table-action>
   <div class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto">
   <table class="w-full table-fixed border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
     <thead class="border-muted/20 text-muted-foreground border text-xs">

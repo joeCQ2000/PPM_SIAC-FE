@@ -72,6 +72,12 @@ export class ModelIngresoComponent implements OnDestroy {
       observacion: [''],
       estado:[true]
     });
+     if (this.data?.idProyecto) {
+    console.log('🎯 ID Proyecto recibido:', this.data.idProyecto);
+    this.ingresoForm.patchValue({
+      id_proyecto: this.data.idProyecto
+    });
+  }
     this.configurarModoEdicion();
   }
 
@@ -136,43 +142,53 @@ export class ModelIngresoComponent implements OnDestroy {
     }
   }
 
-  private crearIngreso(ingresoData: any): void {
-    this.ingresoservice.Registrar(ingresoData)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (resp) => {
-          console.log('Registro exitoso', resp);
-          Swal.fire({
-            icon: 'success',
-            title: 'Ingreso registrado correctamente',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timerProgressBar: true,
-            timer: 3000,
-            background: '#1E293B',
-            color: '#ffff'
-          });
-          this.dialogRef.close({ accion: 'crear', data: resp });
-        },
-        error: (err) => {
-          console.error('Error al registrar', err);
-          Swal.fire({
-            icon: 'error',
-            title: 'Ocurrió un error al registrar',
-            text: err?.error?.message || 'Intente nuevamente',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timerProgressBar: true,
-            timer: 5000,
-            background: '#1E293B',
-            color: '#ffff'
-          });
-        }
-      });
+ private crearIngreso(ingresoData: any): void {
+  // 🔥 ASEGÚRATE DE QUE TENGA EL ID DEL PROYECTO
+  if (this.data?.idProyecto) {
+    ingresoData.id_proyecto = this.data.idProyecto;
   }
 
+  console.log('📤 Enviando datos:', ingresoData); // 🔥 LOG DE DEPURACIÓN
+
+  this.ingresoservice.Registrar(ingresoData)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (resp) => {
+        console.log('✅ Registro exitoso', resp);
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Ingreso registrado correctamente',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timerProgressBar: true,
+          timer: 3000,
+          background: '#1E293B',
+          color: '#ffff'
+        });
+        
+        // 🔥 CIERRE CORRECTO
+        console.log('🚪 Cerrando modal con:', { accion: 'crear', data: resp });
+        this.dialogRef.close({ accion: 'crear', data: resp });
+      },
+      error: (err) => {
+        console.error('❌ Error al registrar', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Ocurrió un error al registrar',
+          text: err?.error?.message || 'Intente nuevamente',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timerProgressBar: true,
+          timer: 5000,
+          background: '#1E293B',
+          color: '#ffff'
+        });
+      }
+    });
+}
   private actualizarIngreso(ingresoData: any): void {
     // Agregar el ID al objeto de datos
     this.ingresoservice.Actualizar(this.ingresoid!)

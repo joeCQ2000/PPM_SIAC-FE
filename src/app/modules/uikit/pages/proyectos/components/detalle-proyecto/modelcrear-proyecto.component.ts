@@ -86,19 +86,18 @@ proyecto: BuscarPorIdProyecto | null = null;
       next: (response) => {
         this.proyecto = response;
         
-        // 🔥 EXTRAE LOS INGRESOS Y EGRESOS
         this.ingresos = response.ingresos || [];
         this.egresos = response.egresos || [];
         
         this.cargando = false;
         
-        console.group('✅ Datos Cargados Correctamente');
-        console.log('Proyecto:', this.proyecto);
-        console.log('Ingresos:', this.ingresos.length, 'registros');
-        console.log('Egresos:', this.egresos.length, 'registros');
-        console.table(this.ingresos.slice(0, 10)); // Muestra los primeros 3
-        console.table(this.egresos.slice(0, 10));
-        console.groupEnd();
+         console.group('✅ Datos Cargados Correctamente');
+      console.log('Proyecto:', this.proyecto);
+      console.log('Ingresos:', this.ingresos.length, 'registros');
+      console.log('Egresos:', this.egresos.length, 'registros');
+      console.log('IDs de ingresos:', this.ingresos.map(i => i.id_ingreso));
+      console.log('IDs de egresos:', this.egresos.map(e => e.id_egreso));
+      console.groupEnd();
       },
       error: (err) => {
         this.error = 'Error al cargar el proyecto';
@@ -142,8 +141,8 @@ proyecto: BuscarPorIdProyecto | null = null;
     width: '800px',
     maxWidth: '95vw',
     data: {
-      modo: 'editar', // 🔥 CAMBIA ESTO - El modal espera "modo"
-      proyecto: proyectoParaEditar // 🔥 Pasa el proyecto mapeado
+      modo: 'editar', 
+      proyecto: proyectoParaEditar 
     },
     disableClose: false,
     panelClass: 'custom-dialog-container'
@@ -155,13 +154,12 @@ proyecto: BuscarPorIdProyecto | null = null;
       toast.success('Proyecto actualizado correctamente', {
         position: 'bottom-right'
       });
-      this.cargarProyecto(); // Recarga los datos actualizados
+      this.cargarProyecto(); 
     }
   });
   
 }
 
-// 🔥 MÉTODO AUXILIAR PARA FORMATEAR FECHAS
 private formatearFechaParaInput(fecha: Date | string | null | undefined): string {
   if (!fecha) return '';
   
@@ -169,7 +167,6 @@ private formatearFechaParaInput(fecha: Date | string | null | undefined): string
   
   if (isNaN(date.getTime())) return '';
   
-  // Formato YYYY-MM-DD para inputs de tipo date
   return date.toISOString().split('T')[0];
 }
 
